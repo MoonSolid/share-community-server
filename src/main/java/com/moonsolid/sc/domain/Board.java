@@ -8,6 +8,13 @@ public class Board implements Serializable {
 
   private static final long serialVersionUID = 20200226L;
 
+
+  @Override
+  public String toString() {
+    return "Board [no=" + no + ", title=" + title + ", date=" + date + ", viewCount=" + viewCount
+        + ", writer=" + writer + "]";
+  }
+
   private int no;
   private String title;
   private Date date;
