@@ -43,4 +43,4 @@
 ###  8: 클라이언트의 회원 관리 요청(/member/*)을 처리.
 
 - ServerApp.java 변경
-  - processRequest() 메서드 변경  
+  - processRequest() 메서드 변경   
