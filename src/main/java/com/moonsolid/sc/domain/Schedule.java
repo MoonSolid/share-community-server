@@ -7,7 +7,7 @@ public class Schedule implements Serializable {
   private static final long serialVersionUID = 1L;
   int No;
   String place;
-  String Description;
+  String description;
   String memo;
   String cost;
 
@@ -17,7 +17,7 @@ public class Schedule implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((Description == null) ? 0 : Description.hashCode());
+    result = prime * result + ((description == null) ? 0 : description.hashCode());
     result = prime * result + No;
     result = prime * result + ((cost == null) ? 0 : cost.hashCode());
     result = prime * result + ((memo == null) ? 0 : memo.hashCode());
@@ -34,10 +34,10 @@ public class Schedule implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     Schedule other = (Schedule) obj;
-    if (Description == null) {
-      if (other.Description != null)
+    if (description == null) {
+      if (other.description != null)
         return false;
-    } else if (!Description.equals(other.Description))
+    } else if (!description.equals(other.description))
       return false;
     if (No != other.No)
       return false;
@@ -77,11 +77,11 @@ public class Schedule implements Serializable {
   }
 
   public String getDescription() {
-    return Description;
+    return description;
   }
 
   public void setDescription(String description) {
-    Description = description;
+    description = description;
   }
 
   public String getMemo() {
