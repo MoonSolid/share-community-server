@@ -13,10 +13,23 @@ public class Schedule implements Serializable {
   String cost;
   String scheduleTime;
 
-  @Override
-  public String toString() {
-    return "Schedule [No=" + No + ", place=" + place + ", description=" + description + ", memo="
-        + memo + ", cost=" + cost + ", scheduleTime=" + scheduleTime + "]";
+  public static Schedule valueOf(String csv) {
+    String[] data = csv.split(",");
+    Schedule schedule = new Schedule();
+    schedule.setNo(Integer.parseInt(data[0]));
+    schedule.setPlace(data[1]);
+    schedule.setDescription(data[2]);
+    schedule.setMemo(data[3]);
+    schedule.setCost(data[4]);
+    schedule.setScheduleTime(data[5]);
+
+    return schedule;
+  }
+  
+  public String toCsvString() {
+    return String.format("%d,%s,%s,%s,%s,%s\n",
+        this.getNo(),this.getPlace(),this.getDescription(),
+        this.getMemo(),this.getCost(),this.getScheduleTime());
   }
 
 
@@ -71,8 +84,6 @@ public class Schedule implements Serializable {
       return false;
     return true;
   }
-
-
 
   public int getNo() {
     return No;
