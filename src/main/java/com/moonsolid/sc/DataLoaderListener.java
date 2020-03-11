@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Map;
 import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sc.domain.Board;
-import com.moonsolid.sc.domain.Lesson;
 import com.moonsolid.sc.domain.Member;
+import com.moonsolid.sc.domain.Schedule;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
   List<Member> memberList = new ArrayList<>();
   List<Board> boardList = new ArrayList<>();
-  List<Lesson> lessonList = new ArrayList<>();
+  List<Schedule> scheduleList = new ArrayList<>();
 
 
   @Override
@@ -28,11 +28,11 @@ public class DataLoaderListener implements ApplicationContextListener {
     System.out.println("데이터를 로딩합니다.");
     loadBoardData();
     loadMemberData();
-    loadLessonData();
+    loadScheduleData();
 
     context.put("boardList", boardList);
     context.put("memberList", memberList);
-    context.put("lessonList", lessonList);
+    context.put("ScheduleList", scheduleList);
 
   }
 
@@ -42,30 +42,30 @@ public class DataLoaderListener implements ApplicationContextListener {
 
     saveBoardData();
     saveMemberData();
-    saveLessonData();
+    saveScheduleData();
   }
 
   @SuppressWarnings("unchecked")
-  private void loadLessonData() {
-    File file = new File("./lesson.ser2");
+  private void loadScheduleData() {
+    File file = new File("./schedule.ser2");
 
     try (ObjectInputStream in =
         new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-      lessonList = (List<Lesson>) in.readObject();
-      System.out.printf("총 %d 개의 수업 데이터를 로딩했습니다.\n", lessonList.size());
+      scheduleList = (List<Schedule>) in.readObject();
+      System.out.printf("총 %d 개의 일정 데이터를 로딩했습니다.\n", scheduleList.size());
 
     } catch (Exception e) {
       System.out.println("파일 읽기 중 오류 발생! - " + e.getMessage());
     }
   }
 
-  private void saveLessonData() {
-    File file = new File("./lesson.ser2");
+  private void saveScheduleData() {
+    File file = new File("./schedule.ser2");
 
     try (ObjectOutputStream out =
         new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
-      out.writeObject(lessonList);
-      System.out.printf("총 %d 개의 수업 데이터를 저장했습니다.\n", lessonList.size());
+      out.writeObject(scheduleList);
+      System.out.printf("총 %d 개의 일정 데이터를 저장했습니다.\n", scheduleList.size());
 
     } catch (IOException e) {
       System.out.println("파일 쓰기 중 오류 발생! - " + e.getMessage());
