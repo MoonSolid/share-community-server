@@ -328,7 +328,6 @@ public class ServerApp {
               out.writeUTF("같은 번호의 일정이 있습니다.");
             }
 
-
           } catch (Exception e) {
             out.writeUTF("FAIL");
             out.writeUTF(e.getMessage());

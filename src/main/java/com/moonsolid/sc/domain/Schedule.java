@@ -1,3 +1,4 @@
+
 package com.moonsolid.sc.domain;
 
 import java.io.Serializable;
@@ -130,7 +131,4 @@ public class Schedule implements Serializable {
   public void setScheduleTime(String scheduleTime) {
     this.scheduleTime = scheduleTime;
   }
-
-
-
 }
