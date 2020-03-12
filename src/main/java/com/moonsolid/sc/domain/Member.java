@@ -137,7 +137,7 @@ public class Member implements Serializable {
   }
 
   public void setTel(String tel) {
-    this.tel = tel;
+    this.tel = tel;z
   }
 
   public Date getRegisteredDate() {
