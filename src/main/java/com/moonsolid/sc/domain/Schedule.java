@@ -6,12 +6,12 @@ public class Schedule implements Serializable {
 
   private static final long serialVersionUID = 20200311L;
 
-  int No;
-  String place;
-  String description;
-  String memo;
-  String cost;
-  String scheduleTime;
+  private int No;
+  private String place;
+  private String description;
+  private String memo;
+  private String cost;
+  private String scheduleTime;
 
   public static Schedule valueOf(String csv) {
     String[] data = csv.split(",");
@@ -22,14 +22,12 @@ public class Schedule implements Serializable {
     schedule.setMemo(data[3]);
     schedule.setCost(data[4]);
     schedule.setScheduleTime(data[5]);
-
     return schedule;
   }
-  
+
   public String toCsvString() {
-    return String.format("%d,%s,%s,%s,%s,%s\n",
-        this.getNo(),this.getPlace(),this.getDescription(),
-        this.getMemo(),this.getCost(),this.getScheduleTime());
+    return String.format("%d,%s,%s,%s,%s,%s\n", this.getNo(), this.getPlace(),
+        this.getDescription(), this.getMemo(), this.getCost(), this.getScheduleTime());
   }
 
 
