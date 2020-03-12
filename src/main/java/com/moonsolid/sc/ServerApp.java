@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sc.domain.Board;
+import com.moonsolid.sc.domain.Lesson;
 import com.moonsolid.sc.domain.Member;
-import com.moonsolid.sc.domain.Schedule;
 
 public class ServerApp {
 
@@ -45,11 +45,11 @@ public class ServerApp {
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 
-      System.out.println("클라이언트 연결 대기중입니다...");
+      System.out.println("클라이언트 연결 대기중...");
 
       while (true) {
         Socket socket = serverSocket.accept();
-        System.out.println("클라이언트와 연결되었습니다!");
+        System.out.println("클라이언트와 연결되었음!");
 
         if (processRequest(socket) == 9) {
           break;
@@ -63,7 +63,9 @@ public class ServerApp {
     }
 
     notifyApplicationDestroyed();
+
   }
+
 
   @SuppressWarnings("unchecked")
   int processRequest(Socket clientSocket) {
@@ -71,9 +73,11 @@ public class ServerApp {
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
+      System.out.println("통신을 위한 입출력 스트림을 준비하였음!");
+
       while (true) {
         String request = in.readUTF();
-        System.out.println("클라이언트가 보낸 메시지를 수신하였습니다!");
+        System.out.println("클라이언트가 보낸 메시지를 수신하였음!");
 
         if (request.equals("quit")) {
           out.writeUTF("OK");
@@ -89,9 +93,7 @@ public class ServerApp {
 
         List<Board> boards = (List<Board>) context.get("boardList");
         List<Member> members = (List<Member>) context.get("memberList");
-        List<Schedule> schedules = (List<Schedule>) context.get("scheduleList");
-
-
+        List<Lesson> lessons = (List<Lesson>) context.get("lessonList");
 
         if (request.equals("/board/list")) {
           out.writeUTF("OK");
@@ -117,7 +119,7 @@ public class ServerApp {
 
             } else {
               out.writeUTF("FAIL");
-              out.writeUTF("같은 번호의 게시글이 있습니다.");
+              out.writeUTF("같은 번호의 게시물이 있습니다.");
             }
 
 
@@ -143,7 +145,7 @@ public class ServerApp {
 
             } else {
               out.writeUTF("FAIL");
-              out.writeUTF("해당 번호의 게시글이 없습니다.");
+              out.writeUTF("해당 번호의 게시물이 없습니다.");
             }
 
           } catch (Exception e) {
@@ -167,7 +169,7 @@ public class ServerApp {
               out.writeUTF("OK");
             } else {
               out.writeUTF("FAIL");
-              out.writeUTF("해당 번호의 게시글이 없습니다.");
+              out.writeUTF("해당 번호의 게시물이 없습니다.");
             }
 
           } catch (Exception e) {
@@ -192,7 +194,7 @@ public class ServerApp {
 
             } else {
               out.writeUTF("FAIL");
-              out.writeUTF("해당 번호의 게시글이 없습니다.");
+              out.writeUTF("해당 번호의 게시물이 없습니다.");
             }
           } catch (Exception e) {
             out.writeUTF("FAIL");
@@ -303,103 +305,104 @@ public class ServerApp {
             out.writeUTF(e.getMessage());
           }
 
-        } else if (request.equals("/schedule/list")) {
+        } else if (request.equals("/lesson/list")) {
           out.writeUTF("OK");
           out.reset();
-          out.writeObject(schedules);
+          out.writeObject(lessons);
 
-        } else if (request.equals("/schedule/add")) {
+        } else if (request.equals("/lesson/add")) {
           try {
-            Schedule schedule = (Schedule) in.readObject();
+            Lesson lesson = (Lesson) in.readObject();
 
             int i = 0;
-            for (; i < schedules.size(); i++) {
-              if (schedules.get(i).getNo() == schedule.getNo()) {
+            for (; i < lessons.size(); i++) {
+              if (lessons.get(i).getNo() == lesson.getNo()) {
                 break;
               }
             }
 
-            if (i == schedules.size()) {
-              schedules.add(schedule);
+            if (i == lessons.size()) {
+              lessons.add(lesson);
               out.writeUTF("OK");
 
             } else {
               out.writeUTF("FAIL");
-              out.writeUTF("같은 번호의 일정이 있습니다.");
+              out.writeUTF("같은 번호의 수업이 있습니다.");
             }
+
 
           } catch (Exception e) {
             out.writeUTF("FAIL");
             out.writeUTF(e.getMessage());
           }
-        } else if (request.equals("/schedule/detail")) {
+        } else if (request.equals("/lesson/detail")) {
           try {
             int no = in.readInt();
 
-            Schedule schedule = null;
-            for (Schedule s : schedules) {
-              if (s.getNo() == no) {
-                schedule = s;
+            Lesson lesson = null;
+            for (Lesson l : lessons) {
+              if (l.getNo() == no) {
+                lesson = l;
                 break;
               }
             }
 
-            if (schedule != null) {
+            if (lesson != null) {
               out.writeUTF("OK");
-              out.writeObject(schedule);
+              out.writeObject(lesson);
 
             } else {
               out.writeUTF("FAIL");
-              out.writeUTF("해당 번호의 일정이 없습니다.");
+              out.writeUTF("해당 번호의 수업이 없습니다.");
             }
 
           } catch (Exception e) {
             out.writeUTF("FAIL");
             out.writeUTF(e.getMessage());
           }
-        } else if (request.equals("/schedule/update")) {
+        } else if (request.equals("/lesson/update")) {
           try {
-            Schedule schedule = (Schedule) in.readObject();
+            Lesson lesson = (Lesson) in.readObject();
 
             int index = -1;
-            for (int i = 0; i < schedules.size(); i++) {
-              if (schedules.get(i).getNo() == schedule.getNo()) {
+            for (int i = 0; i < lessons.size(); i++) {
+              if (lessons.get(i).getNo() == lesson.getNo()) {
                 index = i;
                 break;
               }
             }
 
             if (index != -1) {
-              schedules.set(index, schedule);
+              lessons.set(index, lesson);
               out.writeUTF("OK");
             } else {
               out.writeUTF("FAIL");
-              out.writeUTF("해당 번호의 일정이 없습니다.");
+              out.writeUTF("해당 번호의 수업이 없습니다.");
             }
 
           } catch (Exception e) {
             out.writeUTF("FAIL");
             out.writeUTF(e.getMessage());
           }
-        } else if (request.equals("/schedule/delete")) {
+        } else if (request.equals("/lesson/delete")) {
           try {
             int no = in.readInt();
 
             int index = -1;
-            for (int i = 0; i < schedules.size(); i++) {
-              if (schedules.get(i).getNo() == no) {
+            for (int i = 0; i < lessons.size(); i++) {
+              if (lessons.get(i).getNo() == no) {
                 index = i;
                 break;
               }
             }
 
             if (index != -1) {
-              schedules.remove(index);
+              lessons.remove(index);
               out.writeUTF("OK");
 
             } else {
               out.writeUTF("FAIL");
-              out.writeUTF("해당 번호의 일정이 없습니다.");
+              out.writeUTF("해당 번호의 수업이 없습니다.");
             }
           } catch (Exception e) {
             out.writeUTF("FAIL");
@@ -425,12 +428,10 @@ public class ServerApp {
   }
 
   public static void main(String[] args) {
-    System.out.println("서버 스케쥴관리 시스템입니다.");
+    System.out.println("서버 수업 관리 시스템입니다.");
 
     ServerApp app = new ServerApp();
     app.addApplicationContextListener(new DataLoaderListener());
     app.service();
-
-
   }
 }

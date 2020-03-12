@@ -4,16 +4,16 @@ import java.io.Serializable;
 import java.sql.Date;
 
 public class Board implements Serializable {
-  
-  
-  private static final long serialVersionUID = 20200204L;
-  
+
+
+  private static final long serialVersionUID = 20200131L;
+
   private int no;
   private String title;
   private Date date;
   private int viewCount;
   private String writer;
-  
+
   public static Board valueOf(String csv) {
     String[] data = csv.split(",");
     Board board = new Board();
@@ -23,17 +23,16 @@ public class Board implements Serializable {
     board.setViewCount(Integer.parseInt(data[3]));
     board.setWriter(data[4]);
     return board;
-    
+
   }
-  
+
   public String toCsvString() {
-    
-  return String.format("%d,%s,%s,%d,%s\n",this.getNo(),
-      this.getTitle(),this.getDate(),this.getViewCount(),
-      this.getWriter());
-  
+
+    return String.format("%d,%s,%s,%d,%s\n", this.getNo(), this.getTitle(), this.getDate(),
+        this.getViewCount(), this.getWriter());
+
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -45,8 +44,8 @@ public class Board implements Serializable {
     result = prime * result + ((writer == null) ? 0 : writer.hashCode());
     return result;
   }
-  
-  
+
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
@@ -82,37 +81,43 @@ public class Board implements Serializable {
   public int getNo() {
     return no;
   }
+
   public void setNo(int no) {
     this.no = no;
   }
+
   public String getTitle() {
     return title;
   }
+
   public void setTitle(String title) {
     this.title = title;
   }
+
   public Date getDate() {
     return date;
   }
+
   public void setDate(Date date) {
     this.date = date;
   }
+
   public int getViewCount() {
     return viewCount;
   }
+
   public void setViewCount(int viewCount) {
     this.viewCount = viewCount;
   }
-  
+
   public String getWriter() {
     return writer;
   }
+
   public void setWriter(String writer) {
     this.writer = writer;
   }
-  
+
 }
 
- 
-  
-  
+
