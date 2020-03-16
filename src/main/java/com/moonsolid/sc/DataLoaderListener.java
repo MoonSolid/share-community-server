@@ -2,9 +2,9 @@ package com.moonsolid.sc;
 
 import java.util.Map;
 import com.moonsolid.sc.context.ApplicationContextListener;
-import com.moonsolid.sc.dao.BoardObjectFileDao;
-import com.moonsolid.sc.dao.MemberObjectFileDao;
-import com.moonsolid.sc.dao.PlanObjectFileDao;
+import com.moonsolid.sc.dao.json.BoardJsonFileDao;
+import com.moonsolid.sc.dao.json.MemberJsonFileDao;
+import com.moonsolid.sc.dao.json.PlanJsonFileDao;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -12,9 +12,9 @@ public class DataLoaderListener implements ApplicationContextListener {
   public void contextInitialized(Map<String, Object> context) {
     System.out.println("데이터를 로딩합니다.");
 
-    BoardObjectFileDao boardDao = new BoardObjectFileDao("./board.ser2");
-    MemberObjectFileDao memberDao = new MemberObjectFileDao("./member.ser2");
-    PlanObjectFileDao planDao = new PlanObjectFileDao("./plan.ser2");
+    BoardJsonFileDao boardDao = new BoardJsonFileDao("./board.json");
+    MemberJsonFileDao memberDao = new MemberJsonFileDao("./member.json");
+    PlanJsonFileDao planDao = new PlanJsonFileDao("./plan.json");
 
 
     context.put("boardDao", boardDao);

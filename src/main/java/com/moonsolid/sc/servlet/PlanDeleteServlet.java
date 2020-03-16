@@ -2,15 +2,16 @@ package com.moonsolid.sc.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import com.moonsolid.sc.dao.PlanObjectFileDao;
+import com.moonsolid.sc.dao.json.PlanJsonFileDao;
 
 public class PlanDeleteServlet implements Servlet {
 
-  PlanObjectFileDao planDao;
+  PlanJsonFileDao planDao;
 
-  public PlanDeleteServlet(PlanObjectFileDao planDao) {
+  public PlanDeleteServlet(PlanJsonFileDao planDao) {
     this.planDao = planDao;
   }
+
 
 
   @Override

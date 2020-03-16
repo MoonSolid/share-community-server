@@ -2,14 +2,14 @@ package com.moonsolid.sc.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import com.moonsolid.sc.dao.BoardObjectFileDao;
+import com.moonsolid.sc.dao.json.BoardJsonFileDao;
 import com.moonsolid.sc.domain.Board;
 
 public class BoardUpdateServlet implements Servlet {
 
-  BoardObjectFileDao boardDao;
+  BoardJsonFileDao boardDao;
 
-  public BoardUpdateServlet(BoardObjectFileDao boardDao) {
+  public BoardUpdateServlet(BoardJsonFileDao boardDao) {
     this.boardDao = boardDao;
   }
 
