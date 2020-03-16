@@ -112,42 +112,39 @@ public class ServerApp {
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
 
-      while (true) {
-        String request = in.readUTF();
-        System.out.println("클라이언트가 보낸 메시지를 수신하였습니다.");
 
-        switch (request) {
-          case "quit":
-            quit(out);
-            return 0;
-          case "/server/stop":
-            quit(out);
-            return 9;
+      String request = in.readUTF();
+      System.out.println("클라이언트가 보낸 메시지를 수신하였습니다.");
 
-        }
 
-        Servlet servlet = servletMap.get(request);
-
-        if (servlet != null) {
-
-          try {
-            servlet.service(in, out);
-
-          } catch (Exception e) {
-            out.writeUTF("FAIL");
-            out.writeUTF(e.getMessage());
-
-            System.out.println("클라이언트 요청 처리 중 오류 발생:");
-            e.printStackTrace();
-          }
-        } else {
-          notFound(out);
-        }
-
-        out.flush();
-        System.out.println("클라이언트에 응답하였습니다.");
-        System.out.println("--------------------------------");
+      if (request.equalsIgnoreCase("/server/stop")) {
+        quit(out);
+        return 9;
       }
+
+
+      Servlet servlet = servletMap.get(request);
+
+      if (servlet != null) {
+        try {
+          servlet.service(in, out);
+
+        } catch (Exception e) {
+          out.writeUTF("FAIL");
+          out.writeUTF(e.getMessage());
+
+          System.out.println("클라이언트 요청 처리 중 오류 발생:");
+          e.printStackTrace();
+        }
+      } else {
+        notFound(out);
+      }
+
+      out.flush();
+      System.out.println("클라이언트에 응답하였습니다.");
+      System.out.println("--------------------------------");
+      return 0;
+
     } catch (Exception e) {
       System.out.println("예외 발생:");
       e.printStackTrace();
