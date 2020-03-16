@@ -2,13 +2,13 @@ package com.moonsolid.sc.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import com.moonsolid.sc.dao.json.BoardJsonFileDao;
+import com.moonsolid.sc.dao.BoardDao;
 
 public class BoardDeleteServlet implements Servlet {
 
-  BoardJsonFileDao boardDao;
+  BoardDao boardDao;
 
-  public BoardDeleteServlet(BoardJsonFileDao boardDao) {
+  public BoardDeleteServlet(BoardDao boardDao) {
     this.boardDao = boardDao;
   }
 

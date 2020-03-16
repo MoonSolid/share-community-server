@@ -2,14 +2,14 @@ package com.moonsolid.sc.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import com.moonsolid.sc.dao.json.MemberJsonFileDao;
+import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.domain.Member;
 
 public class MemberUpdateServlet implements Servlet {
 
-  MemberJsonFileDao memberDao;
+  MemberDao memberDao;
 
-  public MemberUpdateServlet(MemberJsonFileDao memberDao) {
+  public MemberUpdateServlet(MemberDao memberDao) {
     this.memberDao = memberDao;
   }
 

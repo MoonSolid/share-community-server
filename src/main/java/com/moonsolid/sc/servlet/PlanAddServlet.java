@@ -2,14 +2,14 @@ package com.moonsolid.sc.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import com.moonsolid.sc.dao.json.PlanJsonFileDao;
+import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
 
 public class PlanAddServlet implements Servlet {
 
-  PlanJsonFileDao planDao;
+  PlanDao planDao;
 
-  public PlanAddServlet(PlanJsonFileDao planDao) {
+  public PlanAddServlet(PlanDao planDao) {
     this.planDao = planDao;
   }
 

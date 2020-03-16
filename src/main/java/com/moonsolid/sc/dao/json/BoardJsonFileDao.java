@@ -1,9 +1,10 @@
 package com.moonsolid.sc.dao.json;
 
 import java.util.List;
+import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.domain.Board;
 
-public class BoardJsonFileDao extends AbstractJsonFileDao<Board> {
+public class BoardJsonFileDao extends AbstractJsonFileDao<Board> implements BoardDao {
 
 
   public BoardJsonFileDao(String filename) {

@@ -3,12 +3,13 @@ package com.moonsolid.sc.dao;
 import java.util.List;
 import com.moonsolid.sc.domain.Plan;
 
-public class PlanObjectFileDao extends AbstractObjectFileDao<Plan> {
+public class PlanObjectFileDao extends AbstractObjectFileDao<Plan> implements PlanDao {
 
   public PlanObjectFileDao(String filename) {
     super(filename);
   }
 
+  @Override
   public int insert(Plan plan) throws Exception {
 
 
@@ -21,10 +22,12 @@ public class PlanObjectFileDao extends AbstractObjectFileDao<Plan> {
     return 1;
   }
 
+  @Override
   public List<Plan> findAll() throws Exception {
     return list;
   }
 
+  @Override
   public Plan findByNo(int no) throws Exception {
     int index = indexOf(no);
     if (index == -1) {
@@ -33,6 +36,7 @@ public class PlanObjectFileDao extends AbstractObjectFileDao<Plan> {
     return list.get(index);
   }
 
+  @Override
   public int update(Plan plan) throws Exception {
     int index = indexOf(plan.getNo());
 
@@ -44,6 +48,7 @@ public class PlanObjectFileDao extends AbstractObjectFileDao<Plan> {
     return 1;
   }
 
+  @Override
   public int delete(int no) throws Exception {
     int index = indexOf(no);
     if (index == -1) {

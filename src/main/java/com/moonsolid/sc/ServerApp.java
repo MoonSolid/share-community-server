@@ -10,9 +10,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import com.moonsolid.sc.context.ApplicationContextListener;
-import com.moonsolid.sc.dao.json.BoardJsonFileDao;
-import com.moonsolid.sc.dao.json.MemberJsonFileDao;
-import com.moonsolid.sc.dao.json.PlanJsonFileDao;
+import com.moonsolid.sc.dao.BoardDao;
+import com.moonsolid.sc.dao.MemberDao;
+import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.servlet.BoardAddServlet;
 import com.moonsolid.sc.servlet.BoardDeleteServlet;
 import com.moonsolid.sc.servlet.BoardDetailServlet;
@@ -60,9 +60,9 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    BoardJsonFileDao boardDao = (BoardJsonFileDao) context.get("boardDao");
-    PlanJsonFileDao planDao = (PlanJsonFileDao) context.get("planDao");
-    MemberJsonFileDao memberDao = (MemberJsonFileDao) context.get("memberDao");
+    BoardDao boardDao = (BoardDao) context.get("boardDao");
+    PlanDao planDao = (PlanDao) context.get("planDao");
+    MemberDao memberDao = (MemberDao) context.get("memberDao");
 
     servletMap.put("/board/list", new BoardListServlet(boardDao));
     servletMap.put("/board/add", new BoardAddServlet(boardDao));

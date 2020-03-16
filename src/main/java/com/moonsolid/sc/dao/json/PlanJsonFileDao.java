@@ -1,9 +1,10 @@
 package com.moonsolid.sc.dao.json;
 
 import java.util.List;
+import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
 
-public class PlanJsonFileDao extends AbstractJsonFileDao<Plan> {
+public class PlanJsonFileDao extends AbstractJsonFileDao<Plan> implements PlanDao {
 
   public PlanJsonFileDao(String filename) {
     super(filename);
