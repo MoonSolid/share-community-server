@@ -2,38 +2,28 @@ package com.moonsolid.sc.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
+import com.moonsolid.sc.dao.PlanObjectFileDao;
 import com.moonsolid.sc.domain.Plan;
 
-public class PlanUpdateServlet {
+public class PlanUpdateServlet implements Servlet {
 
-  List<Plan> plans;
+  PlanObjectFileDao planDao;
 
-  public PlanUpdateServlet(List<Plan> plans) {
-    this.plans = plans;
+  public PlanUpdateServlet(PlanObjectFileDao planDao) {
+    this.planDao = planDao;
   }
 
+  @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-
     Plan plan = (Plan) in.readObject();
 
-    int index = -1;
-    for (int i = 0; i < plans.size(); i++) {
-      if (plans.get(i).getNo() == plan.getNo()) {
-        index = i;
-        break;
-      }
-    }
-
-    if (index != -1) {
-      plans.set(index, plan);
+    if (planDao.update(plan) > 0) {
       out.writeUTF("OK");
+
     } else {
       out.writeUTF("FAIL");
       out.writeUTF("해당 번호의 일정이 없습니다.");
     }
   }
-
-
 
 }

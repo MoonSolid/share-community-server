@@ -7,23 +7,34 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.moonsolid.sc.context.ApplicationContextListener;
-import com.moonsolid.sc.domain.Board;
-import com.moonsolid.sc.domain.Member;
-import com.moonsolid.sc.domain.Plan;
+import com.moonsolid.sc.dao.BoardObjectFileDao;
+import com.moonsolid.sc.dao.MemberObjectFileDao;
+import com.moonsolid.sc.dao.PlanObjectFileDao;
+import com.moonsolid.sc.servlet.BoardAddServlet;
+import com.moonsolid.sc.servlet.BoardDeleteServlet;
+import com.moonsolid.sc.servlet.BoardDetailServlet;
+import com.moonsolid.sc.servlet.BoardListServlet;
+import com.moonsolid.sc.servlet.BoardUpdateServlet;
+import com.moonsolid.sc.servlet.MemberAddServlet;
+import com.moonsolid.sc.servlet.MemberDeleteServlet;
+import com.moonsolid.sc.servlet.MemberDetailServlet;
+import com.moonsolid.sc.servlet.MemberListServlet;
+import com.moonsolid.sc.servlet.MemberUpdateServlet;
+import com.moonsolid.sc.servlet.PlanAddServlet;
+import com.moonsolid.sc.servlet.PlanDeleteServlet;
+import com.moonsolid.sc.servlet.PlanDetailServlet;
+import com.moonsolid.sc.servlet.PlanListServlet;
+import com.moonsolid.sc.servlet.PlanUpdateServlet;
+import com.moonsolid.sc.servlet.Servlet;
 
 public class ServerApp {
 
   Set<ApplicationContextListener> listeners = new HashSet<>();
   Map<String, Object> context = new HashMap<>();
-
-
-  List<Board> boards;
-  List<Member> members;
-  List<Plan> plans;
+  Map<String, Servlet> servletMap = new HashMap<>();
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -50,10 +61,27 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    boards = (List<Board>) context.get("boardList");
-    members = (List<Member>) context.get("memberList");
-    plans = (List<Plan>) context.get("planList");
+    BoardObjectFileDao boardDao = (BoardObjectFileDao) context.get("boardDao");
+    MemberObjectFileDao memberDao = (MemberObjectFileDao) context.get("memberDao");
+    PlanObjectFileDao planDao = (PlanObjectFileDao) context.get("planDao");
 
+    servletMap.put("/board/list", new BoardListServlet(boardDao));
+    servletMap.put("/board/add", new BoardAddServlet(boardDao));
+    servletMap.put("/board/detail", new BoardDetailServlet(boardDao));
+    servletMap.put("/board/update", new BoardUpdateServlet(boardDao));
+    servletMap.put("/board/delete", new BoardDeleteServlet(boardDao));
+
+    servletMap.put("/plan/list", new PlanListServlet(planDao));
+    servletMap.put("/plan/add", new PlanAddServlet(planDao));
+    servletMap.put("/plan/detail", new PlanDetailServlet(planDao));
+    servletMap.put("/plan/update", new PlanUpdateServlet(planDao));
+    servletMap.put("/plan/delete", new PlanDeleteServlet(planDao));
+
+    servletMap.put("/member/list", new MemberListServlet(memberDao));
+    servletMap.put("/member/add", new MemberAddServlet(memberDao));
+    servletMap.put("/member/detail", new MemberDetailServlet(memberDao));
+    servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
+    servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 
@@ -96,56 +124,30 @@ public class ServerApp {
           case "/server/stop":
             quit(out);
             return 9;
-          case "/board/list":
-            listBoard(out);
-            break;
-          case "/board/add":
-            addBoard(in, out);
-            break;
-          case "/board/detail":
-            detailBoard(in, out);
-            break;
-          case "/board/update":
-            updateBoard(in, out);
-            break;
-          case "/board/delete":
-            deleteBoard(in, out);
-            break;
-          case "/member/list":
-            listMember(out);
-            break;
-          case "/member/add":
-            addMember(in, out);
-            break;
-          case "/member/detail":
-            detailMember(in, out);
-            break;
-          case "/member/update":
-            updateMember(in, out);
-            break;
-          case "/member/delete":
-            deleteMember(in, out);
-            break;
-          case "/plan/list":
-            listPlan(out);
-            break;
-          case "/plan/add":
-            addPlan(in, out);
-            break;
-          case "/plan/detail":
-            detailPlan(in, out);
-            break;
-          case "/plan/update":
-            updatePlan(in, out);
-            break;
-          case "/plan/delete":
-            deletePlan(in, out);
-            break;
-          default:
-            notFound(out);
+
         }
+
+        Servlet servlet = servletMap.get(request);
+
+        if (servlet != null) {
+
+          try {
+            servlet.service(in, out);
+
+          } catch (Exception e) {
+            out.writeUTF("FAIL");
+            out.writeUTF(e.getMessage());
+
+            System.out.println("클라이언트 요청 처리 중 오류 발생:");
+            e.printStackTrace();
+          }
+        } else {
+          notFound(out);
+        }
+
         out.flush();
-        System.out.println("클라이언트로 메시지를 전송하였습니다.");
+        System.out.println("클라이언트에 응답하였습니다.");
+        System.out.println("--------------------------------");
       }
     } catch (Exception e) {
       System.out.println("예외 발생:");
@@ -165,344 +167,8 @@ public class ServerApp {
     out.flush();
   }
 
-  private void deleteMember(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      int index = -1;
-      for (int i = 0; i < members.size(); i++) {
-        if (members.get(i).getNo() == no) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        members.remove(index);
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 회원이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void updateMember(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Member member = (Member) in.readObject();
-
-      int index = -1;
-      for (int i = 0; i < members.size(); i++) {
-        if (members.get(i).getNo() == member.getNo()) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        members.set(index, member);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 회원이 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void detailMember(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      Member member = null;
-      for (Member m : members) {
-        if (m.getNo() == no) {
-          member = m;
-          break;
-        }
-      }
-
-      if (member != null) {
-        out.writeUTF("OK");
-        out.writeObject(member);
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 회원이 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void addMember(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Member member = (Member) in.readObject();
-
-      int i = 0;
-      for (; i < members.size(); i++) {
-        if (members.get(i).getNo() == member.getNo()) {
-          break;
-        }
-      }
-
-      if (i == members.size()) {
-        members.add(member);
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 회원이 있습니다.");
-      }
-
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void listMember(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(members);
-  }
-
-  private void deleteBoard(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      int index = -1;
-      for (int i = 0; i < boards.size(); i++) {
-        if (boards.get(i).getNo() == no) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        boards.remove(index);
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void updateBoard(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Board board = (Board) in.readObject();
-
-      int index = -1;
-      for (int i = 0; i < boards.size(); i++) {
-        if (boards.get(i).getNo() == board.getNo()) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        boards.set(index, board);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void detailBoard(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      Board board = null;
-      for (Board b : boards) {
-        if (b.getNo() == no) {
-          board = b;
-          break;
-        }
-      }
-
-      if (board != null) {
-        out.writeUTF("OK");
-        out.writeObject(board);
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void addBoard(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Board board = (Board) in.readObject();
-
-      int i = 0;
-      for (; i < boards.size(); i++) {
-        if (boards.get(i).getNo() == board.getNo()) {
-          break;
-        }
-      }
-
-      if (i == boards.size()) {
-        boards.add(board);
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 게시물이 있습니다.");
-      }
-
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void listBoard(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(boards);
-  }
-
-  private void deletePlan(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      int index = -1;
-      for (int i = 0; i < plans.size(); i++) {
-        if (plans.get(i).getNo() == no) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        plans.remove(index);
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 일정이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void updatePlan(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Plan plan = (Plan) in.readObject();
-
-      int index = -1;
-      for (int i = 0; i < plans.size(); i++) {
-        if (plans.get(i).getNo() == plan.getNo()) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        plans.set(index, plan);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 일정이 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void detailPlan(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      Plan plan = null;
-      for (Plan p : plans) {
-        if (p.getNo() == no) {
-          plan = p;
-          break;
-        }
-      }
-
-      if (plan != null) {
-        out.writeUTF("OK");
-        out.writeObject(plan);
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 일정이 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void addPlan(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Plan plan = (Plan) in.readObject();
-
-      int i = 0;
-      for (; i < plans.size(); i++) {
-        if (plans.get(i).getNo() == plan.getNo()) {
-          break;
-        }
-      }
-
-      if (i == plans.size()) {
-        plans.add(plan);
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 일정이 있습니다.");
-      }
-
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void listPlan(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(plans);
-  }
-
   public static void main(String[] args) {
-    System.out.println("서버 일정 관리 시스템입니다.");
+    System.out.println("서버 스케쥴 관리 시스템입니다.");
 
     ServerApp app = new ServerApp();
     app.addApplicationContextListener(new DataLoaderListener());

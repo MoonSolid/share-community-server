@@ -2,30 +2,22 @@ package com.moonsolid.sc.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import com.moonsolid.sc.domain.Plan;
+import com.moonsolid.sc.dao.PlanObjectFileDao;
 
-public class PlanDeleteServlet {
+public class PlanDeleteServlet implements Servlet {
 
-  List<Plan> plans;
+  PlanObjectFileDao planDao;
 
-  public PlanDeleteServlet(List<Plan> plans) {
-    this.plans = plans;
+  public PlanDeleteServlet(PlanObjectFileDao planDao) {
+    this.planDao = planDao;
   }
 
 
+  @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     int no = in.readInt();
 
-    int index = -1;
-    for (int i = 0; i < plans.size(); i++) {
-      if (plans.get(i).getNo() == no) {
-        index = i;
-        break;
-      }
-    }
-    if (index != -1) {
-      plans.remove(index);
+    if (planDao.delete(no) > 0) {
       out.writeUTF("OK");
 
     } else {

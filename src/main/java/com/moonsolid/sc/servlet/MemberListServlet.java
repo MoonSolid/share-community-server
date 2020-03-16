@@ -2,23 +2,21 @@ package com.moonsolid.sc.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import com.moonsolid.sc.domain.Member;
+import com.moonsolid.sc.dao.MemberObjectFileDao;
 
-public class MemberListServlet {
+public class MemberListServlet implements Servlet {
 
-  List<Member> members;
+  MemberObjectFileDao memberDao;
 
-  public MemberListServlet(List<Member> members) {
-    this.members = members;
+  public MemberListServlet(MemberObjectFileDao memberDao) {
+    this.memberDao = memberDao;
   }
 
+  @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-
     out.writeUTF("OK");
     out.reset();
-    out.writeObject(members);
-
+    out.writeObject(memberDao.findAll());
   }
 
 
