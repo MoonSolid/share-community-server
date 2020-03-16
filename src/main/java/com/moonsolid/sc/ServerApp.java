@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sc.domain.Board;
-import com.moonsolid.sc.domain.Lesson;
 import com.moonsolid.sc.domain.Member;
+import com.moonsolid.sc.domain.Plan;
 
 public class ServerApp {
 
@@ -23,7 +23,7 @@ public class ServerApp {
 
   List<Board> boards;
   List<Member> members;
-  List<Lesson> lessons;
+  List<Plan> plans;
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -52,7 +52,7 @@ public class ServerApp {
 
     boards = (List<Board>) context.get("boardList");
     members = (List<Member>) context.get("memberList");
-    lessons = (List<Lesson>) context.get("lessonList");
+    plans = (List<Plan>) context.get("planList");
 
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
@@ -126,20 +126,20 @@ public class ServerApp {
           case "/member/delete":
             deleteMember(in, out);
             break;
-          case "/lesson/list":
-            listLesson(out);
+          case "/plan/list":
+            listPlan(out);
             break;
-          case "/lesson/add":
-            addLesson(in, out);
+          case "/plan/add":
+            addPlan(in, out);
             break;
-          case "/lesson/detail":
-            detailLesson(in, out);
+          case "/plan/detail":
+            detailPlan(in, out);
             break;
-          case "/lesson/update":
-            updateLesson(in, out);
+          case "/plan/update":
+            updatePlan(in, out);
             break;
-          case "/lesson/delete":
-            deleteLesson(in, out);
+          case "/plan/delete":
+            deletePlan(in, out);
             break;
           default:
             notFound(out);
@@ -163,118 +163,6 @@ public class ServerApp {
   private void quit(ObjectOutputStream out) throws IOException {
     out.writeUTF("OK");
     out.flush();
-  }
-
-  private void deleteLesson(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      int index = -1;
-      for (int i = 0; i < lessons.size(); i++) {
-        if (lessons.get(i).getNo() == no) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        lessons.remove(index);
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 수업이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void updateLesson(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Lesson lesson = (Lesson) in.readObject();
-
-      int index = -1;
-      for (int i = 0; i < lessons.size(); i++) {
-        if (lessons.get(i).getNo() == lesson.getNo()) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        lessons.set(index, lesson);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 수업이 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void detailLesson(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      Lesson lesson = null;
-      for (Lesson l : lessons) {
-        if (l.getNo() == no) {
-          lesson = l;
-          break;
-        }
-      }
-
-      if (lesson != null) {
-        out.writeUTF("OK");
-        out.writeObject(lesson);
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 수업이 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void addLesson(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Lesson lesson = (Lesson) in.readObject();
-
-      int i = 0;
-      for (; i < lessons.size(); i++) {
-        if (lessons.get(i).getNo() == lesson.getNo()) {
-          break;
-        }
-      }
-
-      if (i == lessons.size()) {
-        lessons.add(lesson);
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 수업이 있습니다.");
-      }
-
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void listLesson(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(lessons);
   }
 
   private void deleteMember(ObjectInputStream in, ObjectOutputStream out) throws IOException {
@@ -499,6 +387,118 @@ public class ServerApp {
     out.writeUTF("OK");
     out.reset();
     out.writeObject(boards);
+  }
+
+  private void deletePlan(ObjectInputStream in, ObjectOutputStream out) throws IOException {
+    try {
+      int no = in.readInt();
+
+      int index = -1;
+      for (int i = 0; i < plans.size(); i++) {
+        if (plans.get(i).getNo() == no) {
+          index = i;
+          break;
+        }
+      }
+
+      if (index != -1) {
+        plans.remove(index);
+        out.writeUTF("OK");
+
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("해당 번호의 일정이 없습니다.");
+      }
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void updatePlan(ObjectInputStream in, ObjectOutputStream out) throws IOException {
+    try {
+      Plan plan = (Plan) in.readObject();
+
+      int index = -1;
+      for (int i = 0; i < plans.size(); i++) {
+        if (plans.get(i).getNo() == plan.getNo()) {
+          index = i;
+          break;
+        }
+      }
+
+      if (index != -1) {
+        plans.set(index, plan);
+        out.writeUTF("OK");
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("해당 번호의 일정이 없습니다.");
+      }
+
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void detailPlan(ObjectInputStream in, ObjectOutputStream out) throws IOException {
+    try {
+      int no = in.readInt();
+
+      Plan plan = null;
+      for (Plan p : plans) {
+        if (p.getNo() == no) {
+          plan = p;
+          break;
+        }
+      }
+
+      if (plan != null) {
+        out.writeUTF("OK");
+        out.writeObject(plan);
+
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("해당 번호의 일정이 없습니다.");
+      }
+
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void addPlan(ObjectInputStream in, ObjectOutputStream out) throws IOException {
+    try {
+      Plan plan = (Plan) in.readObject();
+
+      int i = 0;
+      for (; i < plans.size(); i++) {
+        if (plans.get(i).getNo() == plan.getNo()) {
+          break;
+        }
+      }
+
+      if (i == plans.size()) {
+        plans.add(plan);
+        out.writeUTF("OK");
+
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("같은 번호의 일정이 있습니다.");
+      }
+
+
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void listPlan(ObjectOutputStream out) throws IOException {
+    out.writeUTF("OK");
+    out.reset();
+    out.writeObject(plans);
   }
 
   public static void main(String[] args) {
