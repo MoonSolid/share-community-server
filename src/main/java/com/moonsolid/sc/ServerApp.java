@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.dao.MemberDao;
@@ -35,6 +37,8 @@ public class ServerApp {
   Set<ApplicationContextListener> listeners = new HashSet<>();
   Map<String, Object> context = new HashMap<>();
   Map<String, Servlet> servletMap = new HashMap<>();
+
+  ExecutorService executorService = Executors.newCachedThreadPool();
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -90,17 +94,20 @@ public class ServerApp {
         Socket socket = serverSocket.accept();
         System.out.println("클라이언트와 연결되었습니다.");
 
-        new Thread(() -> {
+
+        executorService.submit(() -> {
           processRequest(socket);
           System.out.println("--------------------------------------");
-        }).start();
+        });
       }
 
     } catch (Exception e) {
-      System.out.println("서버 준비 중 오류 발생");
+      System.out.println("서버 준비 중 오류 발생!");
     }
 
     notifyApplicationDestroyed();
+
+    executorService.shutdown();
 
   }
 
