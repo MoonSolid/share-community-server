@@ -88,17 +88,16 @@ public class ServerApp {
 
       while (true) {
         Socket socket = serverSocket.accept();
-        System.out.println("클라이언트와 연결되었음!");
+        System.out.println("클라이언트와 연결되었습니다.");
 
-        if (processRequest(socket) == 9) {
-          break;
-        }
-
-        System.out.println("--------------------------------------");
+        new Thread(() -> {
+          processRequest(socket);
+          System.out.println("--------------------------------------");
+        }).start();
       }
 
     } catch (Exception e) {
-      System.out.println("서버 준비 중 오류 발생!");
+      System.out.println("서버 준비 중 오류 발생");
     }
 
     notifyApplicationDestroyed();
@@ -111,8 +110,6 @@ public class ServerApp {
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
-
-
       String request = in.readUTF();
       System.out.println("클라이언트가 보낸 메시지를 수신하였습니다.");
 
@@ -121,7 +118,6 @@ public class ServerApp {
         quit(out);
         return 9;
       }
-
 
       Servlet servlet = servletMap.get(request);
 
@@ -142,7 +138,6 @@ public class ServerApp {
 
       out.flush();
       System.out.println("클라이언트에 응답하였습니다.");
-      System.out.println("--------------------------------");
       return 0;
 
     } catch (Exception e) {
