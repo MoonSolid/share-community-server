@@ -1,13 +1,14 @@
 package com.moonsolid.sc;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -114,37 +115,17 @@ public class ServerApp {
   int processRequest(Socket clientSocket) {
 
     try (Socket socket = clientSocket;
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+        Scanner in = new Scanner(socket.getInputStream());
+        PrintStream out = new PrintStream(socket.getOutputStream())) {
 
-      String request = in.readUTF();
-      System.out.println("클라이언트가 보낸 메시지를 수신하였습니다.");
+      String request = in.nextLine();
+      System.out.printf("=> %s\n", request);
 
-
-      if (request.equalsIgnoreCase("/server/stop")) {
-        quit(out);
-        return 9;
-      }
-
-      Servlet servlet = servletMap.get(request);
-
-      if (servlet != null) {
-        try {
-          servlet.service(in, out);
-
-        } catch (Exception e) {
-          out.writeUTF("FAIL");
-          out.writeUTF(e.getMessage());
-
-          System.out.println("클라이언트 요청 처리 중 오류 발생:");
-          e.printStackTrace();
-        }
-      } else {
-        notFound(out);
-      }
+      out.println("메시지를 전송하였습니다");
+      out.println("!end!");
 
       out.flush();
-      System.out.println("클라이언트에 응답하였습니다.");
+      System.out.println("클라이언트에게 응답하였습니다.");
       return 0;
 
     } catch (Exception e) {
