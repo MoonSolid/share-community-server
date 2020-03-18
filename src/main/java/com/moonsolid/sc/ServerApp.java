@@ -121,9 +121,26 @@ public class ServerApp {
       String request = in.nextLine();
       System.out.printf("=> %s\n", request);
 
-      out.println("메시지를 전송하였습니다");
-      out.println("!end!");
+      Servlet servlet = servletMap.get(request);
 
+      if (servlet != null) {
+        try {
+          servlet.service(in, out);
+
+        } catch (Exception e) {
+          out.println("요청 처리 중 오류 발생!");
+          out.println(e.getMessage());
+
+          System.out.println("클라이언트 요청 처리 중 오류 발생:");
+          e.printStackTrace();
+        }
+      } else {
+        notFound(out);
+      }
+
+
+
+      out.println("!end!");
       out.flush();
       System.out.println("클라이언트에게 응답하였습니다.");
       return 0;
@@ -136,9 +153,9 @@ public class ServerApp {
   }
 
 
-  private void notFound(ObjectOutputStream out) throws IOException {
-    out.writeUTF("FAIL");
-    out.writeUTF("요청한 명령을 처리할 수 없습니다.");
+  private void notFound(PrintStream out) throws IOException {
+    out.println("FAIL");
+    out.println("요청한 명령을 처리할 수 없습니다.");
   }
 
   private void quit(ObjectOutputStream out) throws IOException {

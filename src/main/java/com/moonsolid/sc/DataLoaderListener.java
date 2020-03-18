@@ -1,25 +1,41 @@
 package com.moonsolid.sc;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Map;
 import com.moonsolid.sc.context.ApplicationContextListener;
-import com.moonsolid.sc.dao.json.BoardJsonFileDao;
-import com.moonsolid.sc.dao.json.MemberJsonFileDao;
-import com.moonsolid.sc.dao.json.PlanJsonFileDao;
+import com.moonsolid.sc.dao.mariadb.BoardDaoImpl;
+import com.moonsolid.sc.dao.mariadb.MemberDaoImpl;
+import com.moonsolid.sc.dao.mariadb.PlanDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
+  Connection con;
+
   @Override
   public void contextInitialized(Map<String, Object> context) {
-    System.out.println("데이터를 로딩합니다.");
 
-    context.put("boardDao", new BoardJsonFileDao("./board.json"));
-    context.put("memberDao", new MemberJsonFileDao("./member.json"));
-    context.put("planDao", new PlanJsonFileDao("./plan.json"));
+    try {
+      Class.forName("org.mariadb.jdbc.Driver");
+      con = DriverManager.getConnection(//
+          "jdbc:mariadb://localhost:3306/scdb", "study", "1111");
+
+      context.put("boardDao", new BoardDaoImpl(con));
+      context.put("planDao", new PlanDaoImpl(con));
+      context.put("memberDao", new MemberDaoImpl(con));
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
-  public void contextDestroyed(Map<String, Object> context) {}
+  public void contextDestroyed(Map<String, Object> context) {
 
+    try {
+      con.close();
+    } catch (Exception e) {
 
-
+    }
+  }
 }
