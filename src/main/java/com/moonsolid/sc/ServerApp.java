@@ -25,6 +25,7 @@ import com.moonsolid.sc.servlet.MemberAddServlet;
 import com.moonsolid.sc.servlet.MemberDeleteServlet;
 import com.moonsolid.sc.servlet.MemberDetailServlet;
 import com.moonsolid.sc.servlet.MemberListServlet;
+import com.moonsolid.sc.servlet.MemberSearchServlet;
 import com.moonsolid.sc.servlet.MemberUpdateServlet;
 import com.moonsolid.sc.servlet.PlanAddServlet;
 import com.moonsolid.sc.servlet.PlanDeleteServlet;
@@ -86,6 +87,7 @@ public class ServerApp {
     servletMap.put("/member/detail", new MemberDetailServlet(memberDao));
     servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
     servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
+    servletMap.put("/member/search", new MemberSearchServlet(memberDao));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 

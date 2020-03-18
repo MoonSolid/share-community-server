@@ -15,4 +15,9 @@ public interface MemberDao {
 
   public int delete(int no) throws Exception;
 
+  default List<Member> findByKeyword(String keyword) throws Exception {
+    return null;
+  }
+
+
 }
