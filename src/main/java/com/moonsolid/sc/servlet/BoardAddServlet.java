@@ -1,7 +1,7 @@
 package com.moonsolid.sc.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.domain.Board;
 
@@ -14,14 +14,17 @@ public class BoardAddServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    Board board = (Board) in.readObject();
+  public void service(Scanner in, PrintStream out) throws Exception {
+    Board board = new Board();
+
+    out.println("게시글 제목 : \n!{}!");
+    board.setTitle(in.nextLine());
 
     if (boardDao.insert(board) > 0) {
-      out.writeUTF("OK");
+      out.println("새 게시글을 등록했습니다.");
+
     } else {
-      out.writeUTF("FAIL");
-      out.writeUTF("같은 번호의 게시글이 있습니다.");
+      out.println("게시글 등록에 실패했습니다.");
     }
   }
 }

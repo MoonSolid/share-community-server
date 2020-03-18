@@ -1,7 +1,7 @@
 package com.moonsolid.sc.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
 
@@ -14,16 +14,22 @@ public class PlanAddServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    Plan plan = (Plan) in.readObject();
+  public void service(Scanner in, PrintStream out) throws Exception {
+    Plan plan = new Plan();
+
+    out.println("일정 장소 : \n!{}!");
+    plan.setPlace(in.nextLine());
+    out.println("일정 내용 : \n!{}!");
+    plan.setDescription(in.nextLine());
+    out.println("일정 메모 : \n!{}!");
+    plan.setMemo(in.nextLine());
+    out.println("일정 비용 : \n!{}!");
+    plan.setCost(in.nextLine());
 
     if (planDao.insert(plan) > 0) {
-      out.writeUTF("OK");
+      out.println("새 일정을 등록했습니다.");
     } else {
-      out.writeUTF("FAIL");
-      out.writeUTF("같은 번호의 일정이 있습니다.");
+      out.println("일정 등록에 실패했습니다.");
     }
   }
-
-
 }
