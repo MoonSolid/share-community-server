@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.dao.MemberDao;
+import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.servlet.BoardAddServlet;
 import com.moonsolid.sc.servlet.BoardDeleteServlet;
@@ -26,6 +27,11 @@ import com.moonsolid.sc.servlet.MemberDetailServlet;
 import com.moonsolid.sc.servlet.MemberListServlet;
 import com.moonsolid.sc.servlet.MemberSearchServlet;
 import com.moonsolid.sc.servlet.MemberUpdateServlet;
+import com.moonsolid.sc.servlet.PhotoBoardAddServlet;
+import com.moonsolid.sc.servlet.PhotoBoardDeleteServlet;
+import com.moonsolid.sc.servlet.PhotoBoardDetailServlet;
+import com.moonsolid.sc.servlet.PhotoBoardListServlet;
+import com.moonsolid.sc.servlet.PhotoBoardUpdateServlet;
 import com.moonsolid.sc.servlet.PlanAddServlet;
 import com.moonsolid.sc.servlet.PlanDeleteServlet;
 import com.moonsolid.sc.servlet.PlanDetailServlet;
@@ -70,6 +76,7 @@ public class ServerApp {
     BoardDao boardDao = (BoardDao) context.get("boardDao");
     PlanDao planDao = (PlanDao) context.get("planDao");
     MemberDao memberDao = (MemberDao) context.get("memberDao");
+    PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
 
     servletMap.put("/board/list", new BoardListServlet(boardDao));
     servletMap.put("/board/add", new BoardAddServlet(boardDao));
@@ -89,6 +96,23 @@ public class ServerApp {
     servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
     servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
     servletMap.put("/member/search", new MemberSearchServlet(memberDao));
+
+    servletMap.put("/photoboard/list", new PhotoBoardListServlet( //
+        photoBoardDao, planDao));
+
+    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet( //
+        photoBoardDao));
+
+    servletMap.put("/photoboard/add", new PhotoBoardAddServlet( //
+        photoBoardDao));
+
+    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet( //
+        photoBoardDao));
+
+    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet( //
+        photoBoardDao));
+
+
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 
