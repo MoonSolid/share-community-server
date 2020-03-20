@@ -20,6 +20,15 @@ public class PhotoBoard implements Serializable {
         + ", viewCount=" + viewCount + ", plan=" + plan + "]";
   }
 
+  public Plan getPlan() {
+    return plan;
+  }
+
+  public void setPlan(Plan plan) {
+    this.plan = plan;
+  }
+
+
   public int getNo() {
     return no;
   }
@@ -52,15 +61,5 @@ public class PhotoBoard implements Serializable {
   public void setViewCount(int viewCount) {
     this.viewCount = viewCount;
   }
-
-  public Plan getPlan() {
-    return plan;
-  }
-
-  public void setPlan(Plan plan) {
-    this.plan = plan;
-  }
-
-
 
 }

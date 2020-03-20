@@ -1,6 +1,6 @@
 # 38_1 - 트랜잭션 적용 전: 사진 게시판 추가하기
 
-## 
+
 
 ### 1: `일정사진 게시판` 데이터를 다룰 DAO를 생성.
 
@@ -29,7 +29,7 @@
 - com.moonsolid.sc.dao.mariadb.PhotoBoardDaoImp 변경
   - findByNo(사진게시글번호) 메서드 변경.
   - 사진 게시글의 상세정보를 가져올 때 sc_photo와 sc_plan을 조인.
-  - sc_photo 데이터는 PhotoBoard에 저장하고, sc_plan 데이터는 Plan에 저장한다. 
+  - sc_photo 데이터는 PhotoBoard에 저장하고, sc_plan 데이터는 Plan에 저장. 
 - com.moonsolid.sc.servlet.PhotoBoardDetailServlet 추가
     - 사진 게시물의 상세정보를 출력.
 - com.moonsolid.sc.ServerApp 변경

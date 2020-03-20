@@ -12,6 +12,13 @@ public class Plan implements Serializable {
   private String memo;
   private String cost;
 
+  @Override
+  public String toString() {
+    return "Plan [no=" + no + ", place=" + place + ", description=" + description + ", memo=" + memo
+        + ", cost=" + cost + "]";
+  }
+
+
   public static Plan valueOf(String csv) {
     String[] data = csv.split(",");
     Plan plan = new Plan();
