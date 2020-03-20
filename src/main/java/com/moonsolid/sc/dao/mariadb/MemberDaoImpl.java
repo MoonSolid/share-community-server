@@ -1,6 +1,7 @@
 package com.moonsolid.sc.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -10,18 +11,21 @@ import com.moonsolid.sc.domain.Member;
 
 public class MemberDaoImpl implements MemberDao {
 
-  Connection con;
+  String jdbcUrl;
+  String username;
+  String password;
 
-  public MemberDaoImpl(Connection con) {
-    this.con = con;
+  public MemberDaoImpl(String jdbcUrl, String username, String password) {
+    this.jdbcUrl = jdbcUrl;
+    this.username = username;
+    this.password = password;
   }
-
-
 
   @Override
   public int insert(Member member) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("insert into sc_member(name, email, pwd, tel, photo) "
           + "values('" + member.getName() + "', '" //
@@ -37,8 +41,9 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public List<Member> findAll() throws Exception {
 
-    try (Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery( //
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(//
             "select member_id, name, email, tel, cdt from sc_member")) {
 
       ArrayList<Member> list = new ArrayList<>();
@@ -62,8 +67,9 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public Member findByNo(int no) throws Exception {
 
-    try (Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery( //
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(//
             "select member_id, name, email, pwd, tel, photo" + " from sc_member"
                 + " where member_id=" + no)) {
 
@@ -85,7 +91,8 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public int update(Member member) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update sc_member set name= '" //
           + member.getName() + "', email='" //
@@ -101,7 +108,8 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("delete from sc_member where member_id=" + no);
 
       return result;
@@ -111,8 +119,9 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public List<Member> findByKeyword(String keyword) throws Exception {
 
-    try (Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery( //
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(//
             "select member_id, name, email, tel, cdt" //
                 + " from sc_member" //
                 + " where name like '%" + keyword //

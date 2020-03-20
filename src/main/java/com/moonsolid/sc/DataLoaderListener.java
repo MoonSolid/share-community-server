@@ -1,7 +1,6 @@
 package com.moonsolid.sc;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.Map;
 import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sc.dao.mariadb.BoardDaoImpl;
@@ -18,15 +17,16 @@ public class DataLoaderListener implements ApplicationContextListener {
   public void contextInitialized(Map<String, Object> context) {
 
     try {
-      Class.forName("org.mariadb.jdbc.Driver");
-      con = DriverManager.getConnection(//
-          "jdbc:mariadb://localhost:3306/scdb", "study", "1111");
+      String jdbcUrl = "jdbc:mariadb://localhost:3306/scdb";
+      String username = "study";
+      String password = "1111";
 
-      context.put("boardDao", new BoardDaoImpl(con));
-      context.put("planDao", new PlanDaoImpl(con));
-      context.put("memberDao", new MemberDaoImpl(con));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(con));
-      context.put("photoFileDao", new PhotoFileDaoImpl(con));
+
+      context.put("boardDao", new BoardDaoImpl(jdbcUrl, username, password));
+      context.put("planDao", new PlanDaoImpl(jdbcUrl, username, password));
+      context.put("memberDao", new MemberDaoImpl(jdbcUrl, username, password));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(jdbcUrl, username, password));
+      context.put("photoFileDao", new PhotoFileDaoImpl(jdbcUrl, username, password));
 
 
     } catch (Exception e) {
@@ -35,12 +35,6 @@ public class DataLoaderListener implements ApplicationContextListener {
   }
 
   @Override
-  public void contextDestroyed(Map<String, Object> context) {
+  public void contextDestroyed(Map<String, Object> context) {}
 
-    try {
-      con.close();
-    } catch (Exception e) {
-
-    }
-  }
 }

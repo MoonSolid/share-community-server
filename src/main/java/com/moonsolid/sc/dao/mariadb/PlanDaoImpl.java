@@ -1,6 +1,7 @@
 package com.moonsolid.sc.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -10,16 +11,21 @@ import com.moonsolid.sc.domain.Plan;
 
 public class PlanDaoImpl implements PlanDao {
 
-  Connection con;
+  String jdbcUrl;
+  String username;
+  String password;
 
-  public PlanDaoImpl(Connection con) {
-    this.con = con;
+  public PlanDaoImpl(String jdbcUrl, String username, String password) {
+    this.jdbcUrl = jdbcUrl;
+    this.username = username;
+    this.password = password;
   }
 
   @Override
   public int insert(Plan plan) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate(
           "insert into sc_plan(place, cont, memo, cost) " + "values('" + plan.getPlace() + "', '" //
@@ -34,8 +40,9 @@ public class PlanDaoImpl implements PlanDao {
   @Override
   public List<Plan> findAll() throws Exception {
 
-    try (Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery( //
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(//
             "select plan_id, place, cont, memo, cost from sc_plan")) {
 
       ArrayList<Plan> list = new ArrayList<>();
@@ -59,8 +66,9 @@ public class PlanDaoImpl implements PlanDao {
   @Override
   public Plan findByNo(int no) throws Exception {
 
-    try (Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery( //
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(//
             "select plan_id, place, cont, memo, cost" + " from sc_plan" + " where plan_id=" + no)) {
 
       if (rs.next()) {
@@ -81,8 +89,8 @@ public class PlanDaoImpl implements PlanDao {
   @Override
   public int update(Plan plan) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
-
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("update sc_plan set place= '" //
           + plan.getPlace() + "', cont='" //
           + plan.getDescription() + "', memo='" //
@@ -96,7 +104,8 @@ public class PlanDaoImpl implements PlanDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("delete from sc_plan where plan_id=" + no);
 
