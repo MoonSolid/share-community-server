@@ -1,6 +1,5 @@
 package com.moonsolid.sc;
 
-import java.sql.Connection;
 import java.util.Map;
 import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sc.dao.mariadb.BoardDaoImpl;
@@ -8,10 +7,9 @@ import com.moonsolid.sc.dao.mariadb.MemberDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PhotoBoardDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PhotoFileDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PlanDaoImpl;
+import com.moonsolid.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
-
-  public static Connection con;
 
   @Override
   public void contextInitialized(Map<String, Object> context) {
@@ -21,12 +19,14 @@ public class DataLoaderListener implements ApplicationContextListener {
       String username = "study";
       String password = "1111";
 
+      ConnectionFactory conFactory = new ConnectionFactory(jdbcUrl, username, password);
 
-      context.put("boardDao", new BoardDaoImpl(jdbcUrl, username, password));
-      context.put("planDao", new PlanDaoImpl(jdbcUrl, username, password));
-      context.put("memberDao", new MemberDaoImpl(jdbcUrl, username, password));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(jdbcUrl, username, password));
-      context.put("photoFileDao", new PhotoFileDaoImpl(jdbcUrl, username, password));
+
+      context.put("boardDao", new BoardDaoImpl(conFactory));
+      context.put("planDao", new PlanDaoImpl(conFactory));
+      context.put("memberDao", new MemberDaoImpl(conFactory));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
+      context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
 
 
     } catch (Exception e) {
