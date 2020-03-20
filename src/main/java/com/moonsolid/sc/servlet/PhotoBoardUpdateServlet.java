@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import com.moonsolid.sc.DataLoaderListener;
 import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.domain.PhotoBoard;
@@ -38,8 +39,11 @@ public class PhotoBoardUpdateServlet implements Servlet {
         old.getTitle()));
     photoBoard.setNo(no);
 
-    if (photoBoardDao.update(photoBoard) > 0) {
-
+    DataLoaderListener.con.setAutoCommit(false);
+    try {
+      if (photoBoardDao.update(photoBoard) == 0) {
+        throw new Exception("사진 게시글 변경에 실패했습니다.");
+      }
       printPhotoFiles(out, no);
 
       out.println();
@@ -60,10 +64,14 @@ public class PhotoBoardUpdateServlet implements Servlet {
           photoFileDao.insert(photoFile);
         }
       }
+      DataLoaderListener.con.commit();
       out.println("사진 게시글을 변경했습니다.");
 
-    } else {
-      out.println("사진 게시글 변경에 실패했습니다.");
+    } catch (Exception e) {
+      DataLoaderListener.con.rollback();
+      out.println(e.getMessage());
+    } finally {
+      DataLoaderListener.con.setAutoCommit(true);
     }
   }
 

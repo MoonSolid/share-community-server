@@ -2,6 +2,7 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
+import com.moonsolid.sc.DataLoaderListener;
 import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.util.Prompt;
@@ -19,15 +20,22 @@ public class PhotoBoardDeleteServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-
     int no = Prompt.getInt(in, out, "번호? ");
 
-    photoFileDao.deleteAll(no);
+    DataLoaderListener.con.setAutoCommit(false);
 
-    if (photoBoardDao.delete(no) > 0) {
+    try {
+      photoFileDao.deleteAll(no);
+      if (photoBoardDao.delete(no) > 0) {
+        throw new Exception("사진 게시글이 없습니다");
+      }
+      DataLoaderListener.con.commit();
       out.println("사진 게시글을 삭제했습니다.");
-    } else {
-      out.println("사진 게시글이 없습니다");
+    } catch (Exception e) {
+      DataLoaderListener.con.rollback();
+      out.println(e.getMessage());
+    } finally {
+      DataLoaderListener.con.setAutoCommit(true);
     }
   }
 }

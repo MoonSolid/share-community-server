@@ -12,7 +12,7 @@ import com.moonsolid.sc.dao.mariadb.PlanDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
-  Connection con;
+  public static Connection con;
 
   @Override
   public void contextInitialized(Map<String, Object> context) {
