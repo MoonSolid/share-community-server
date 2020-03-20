@@ -7,6 +7,7 @@ import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sc.dao.mariadb.BoardDaoImpl;
 import com.moonsolid.sc.dao.mariadb.MemberDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PhotoBoardDaoImpl;
+import com.moonsolid.sc.dao.mariadb.PhotoFileDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PlanDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
@@ -25,6 +26,7 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("planDao", new PlanDaoImpl(con));
       context.put("memberDao", new MemberDaoImpl(con));
       context.put("photoBoardDao", new PhotoBoardDaoImpl(con));
+      context.put("photoFileDao", new PhotoFileDaoImpl(con));
 
 
     } catch (Exception e) {

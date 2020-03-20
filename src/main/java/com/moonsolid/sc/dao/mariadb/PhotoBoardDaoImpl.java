@@ -24,8 +24,12 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
       int result = stmt.executeUpdate( //
           "insert into sc_photo(titl,plan_id) values('" //
               + photoBoard.getTitle() + "', " + photoBoard.getPlan().getNo() //
-              + ")");
-
+              + ")", //
+          Statement.RETURN_GENERATED_KEYS);
+      try (ResultSet generatedKeySet = stmt.getGeneratedKeys()) {
+        generatedKeySet.next();
+        photoBoard.setNo(generatedKeySet.getInt(1));
+      }
       return result;
     }
   }

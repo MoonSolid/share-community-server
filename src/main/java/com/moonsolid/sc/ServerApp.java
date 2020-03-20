@@ -15,6 +15,7 @@ import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.dao.PhotoBoardDao;
+import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.servlet.BoardAddServlet;
 import com.moonsolid.sc.servlet.BoardDeleteServlet;
@@ -77,6 +78,7 @@ public class ServerApp {
     PlanDao planDao = (PlanDao) context.get("planDao");
     MemberDao memberDao = (MemberDao) context.get("memberDao");
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
+    PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
 
     servletMap.put("/board/list", new BoardListServlet(boardDao));
     servletMap.put("/board/add", new BoardAddServlet(boardDao));
@@ -101,16 +103,16 @@ public class ServerApp {
         photoBoardDao, planDao));
 
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet( //
-        photoBoardDao));
+        photoBoardDao, photoFileDao));
 
     servletMap.put("/photoboard/add", new PhotoBoardAddServlet( //
-        photoBoardDao));
+        photoBoardDao, planDao, photoFileDao));
 
     servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet( //
-        photoBoardDao));
+        photoBoardDao, photoFileDao));
 
     servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet( //
-        photoBoardDao));
+        photoBoardDao, photoFileDao));
 
 
 

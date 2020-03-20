@@ -1,0 +1,14 @@
+package com.moonsolid.sc.dao;
+
+import java.util.List;
+import com.moonsolid.sc.domain.PhotoFile;
+
+public interface PhotoFileDao {
+  int insert(PhotoFile photoFile) throws Exception;
+
+  List<PhotoFile> findAll(int boardNo) throws Exception;
+
+  int update(PhotoFile photoFile) throws Exception;
+
+  int deleteAll(int boardNo) throws Exception;
+}
