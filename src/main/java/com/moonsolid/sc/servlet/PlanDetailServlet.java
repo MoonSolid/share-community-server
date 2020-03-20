@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
+import com.moonsolid.util.Prompt;
 
 public class PlanDetailServlet implements Servlet {
 
@@ -17,8 +18,7 @@ public class PlanDetailServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("일정 번호 : \n!{}!");
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "일정 번호 : ");
 
     Plan plan = planDao.findByNo(no);
 

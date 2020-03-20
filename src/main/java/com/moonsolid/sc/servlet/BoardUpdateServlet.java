@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.domain.Board;
+import com.moonsolid.util.Prompt;
 
 public class BoardUpdateServlet implements Servlet {
 
@@ -17,11 +18,7 @@ public class BoardUpdateServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("게시글 번호 : ");
-    out.println("!{}!");
-    out.flush();
-
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "게시글 번호 : ");
 
     Board old = boardDao.findByNo(no);
     if (old == null) {
@@ -29,12 +26,12 @@ public class BoardUpdateServlet implements Servlet {
       return;
     }
 
-    out.printf("(기존 제목 - %s) 게시글 제목 :\n", old.getTitle());
-    out.println("!{}!");
-    out.flush();
 
     Board board = new Board();
-    board.setTitle(in.nextLine());
+
+
+    board.setTitle(Prompt.getString(in, out,
+        String.format("게시글 제목 : (기존 제목 : (%s))", board.getTitle()), board.getTitle()));
     board.setNo(no);
 
     if (boardDao.update(board) > 0) {

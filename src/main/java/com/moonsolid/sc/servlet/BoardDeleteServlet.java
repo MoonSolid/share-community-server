@@ -3,6 +3,7 @@ package com.moonsolid.sc.servlet;
 import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.dao.BoardDao;
+import com.moonsolid.util.Prompt;
 
 public class BoardDeleteServlet implements Servlet {
 
@@ -15,11 +16,9 @@ public class BoardDeleteServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("게시글 번호 : ");
-    out.println("!{}!");
-    out.flush();
 
-    int no = Integer.parseInt(in.nextLine());
+
+    int no = Prompt.getInt(in, out, "게시글 번호 : ");
 
     if (boardDao.delete(no) > 0) {
       out.println("게시글을 삭제했습니다.");

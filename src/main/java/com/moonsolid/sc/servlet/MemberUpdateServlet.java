@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.domain.Member;
+import com.moonsolid.util.Prompt;
 
 public class MemberUpdateServlet implements Servlet {
 
@@ -15,11 +16,8 @@ public class MemberUpdateServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("회원번호 : ");
-    out.println("!{}!");
-    out.flush();
-    int no = Integer.parseInt(in.nextLine());
 
+    int no = Prompt.getInt(in, out, "회원번호 : ");
 
     Member old = memberDao.findByNo(no);
     if (old == null) {
@@ -31,30 +29,11 @@ public class MemberUpdateServlet implements Servlet {
 
     member.setNo(no);
 
-    out.printf("이름(기존 회원이름%s): \n", old.getName());
-    out.println("!{}!");
-    out.flush();
-    member.setName(in.nextLine());
-
-    out.printf("이메일(기존 이메일%s): \n", old.getEmail());
-    out.println("!{}!");
-    out.flush();
-    member.setEmail(in.nextLine());
-
-    out.printf("암호(기존 암호%s): \n", old.getPassword());
-    out.println("!{}!");
-    out.flush();
-    member.setPassword(in.nextLine());
-
-    out.printf("사진(기존 사진%s): \n", old.getPhoto());
-    out.println("!{}!");
-    out.flush();
-    member.setPhoto(in.nextLine());
-
-    out.printf("전화(기존 전화%s): \n", old.getTel());
-    out.println("!{}!");
-    out.flush();
-    member.setTel(in.nextLine());
+    member.setName(Prompt.getString(in, out, "회원이름(기존 이름 : %s): \n", old.getName()));
+    member.setEmail(Prompt.getString(in, out, "이메일(기존 이메일 : %s): \n", old.getEmail()));
+    member.setPassword(Prompt.getString(in, out, "암호(기존 암호 : %s): \n", old.getPassword()));
+    member.setPhoto(Prompt.getString(in, out, "사진(기존사진 : %s): \n", old.getPhoto()));
+    member.setTel(Prompt.getString(in, out, "전화번호(기존전화 : %s): \n", old.getTel()));
 
     if (memberDao.update(member) > 0) {
       out.println("회원을 변경했습니다.");

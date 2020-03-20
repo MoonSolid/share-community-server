@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
+import com.moonsolid.util.Prompt;
 
 public class PlanAddServlet implements Servlet {
 
@@ -17,14 +18,10 @@ public class PlanAddServlet implements Servlet {
   public void service(Scanner in, PrintStream out) throws Exception {
     Plan plan = new Plan();
 
-    out.println("일정 장소 : \n!{}!");
-    plan.setPlace(in.nextLine());
-    out.println("일정 내용 : \n!{}!");
-    plan.setDescription(in.nextLine());
-    out.println("일정 메모 : \n!{}!");
-    plan.setMemo(in.nextLine());
-    out.println("일정 비용 : \n!{}!");
-    plan.setCost(in.nextLine());
+    plan.setPlace(Prompt.getString(in, out, "일정 장소 : "));
+    plan.setDescription(Prompt.getString(in, out, "일정 내용 : "));
+    plan.setMemo(Prompt.getString(in, out, "일정 메모 : "));
+    plan.setCost(Prompt.getString(in, out, "일정 비용 : "));
 
     if (planDao.insert(plan) > 0) {
       out.println("새 일정을 등록했습니다.");

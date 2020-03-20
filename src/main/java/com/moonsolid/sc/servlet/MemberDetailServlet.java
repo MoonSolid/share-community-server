@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.domain.Member;
+import com.moonsolid.util.Prompt;
 
 public class MemberDetailServlet implements Servlet {
 
@@ -15,9 +16,8 @@ public class MemberDetailServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("회원번호 : \n!{}!");
-    int no = Integer.parseInt(in.nextLine());
 
+    int no = Prompt.getInt(in, out, "회원번호 : ");
     Member member = memberDao.findByNo(no);
 
     if (member != null) {

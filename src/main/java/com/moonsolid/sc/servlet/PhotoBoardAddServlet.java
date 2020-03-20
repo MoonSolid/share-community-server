@@ -2,6 +2,7 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
@@ -9,6 +10,7 @@ import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.PhotoFile;
 import com.moonsolid.sc.domain.Plan;
+import com.moonsolid.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
 
@@ -31,16 +33,9 @@ public class PhotoBoardAddServlet implements Servlet {
 
     PhotoBoard photoBoard = new PhotoBoard();
 
-    out.println("제목 : ");
-    out.println("!{}!");
-    out.flush();
-    photoBoard.setTitle(in.nextLine());
+    photoBoard.setTitle(Prompt.getString(in, out, "제목 : "));
 
-    out.println("일정번호 : ");
-    out.println("!{}!");
-    out.flush();
-
-    int planNo = Integer.parseInt(in.nextLine());
+    int planNo = Prompt.getInt(in, out, "일정번호 : ");
 
     Plan plan = planDao.findByNo(planNo);
     if (plan == null) {
@@ -50,30 +45,11 @@ public class PhotoBoardAddServlet implements Servlet {
     photoBoard.setPlan(plan);
 
     if (photoBoardDao.insert(photoBoard) > 0) {
-      out.println("최소 한개의 사진파일을 등록해야 합니다.");
-      out.println("파일명 입력 없이 엔터를 치면 파일 추가를 마칩니다.");
 
-      ArrayList<PhotoFile> photoFiles = new ArrayList<>();
 
-      while (true) {
-        out.println("사진파일 : ");
-        out.println("!{}!");
-        out.flush();
-        String filepath = in.nextLine();
-
-        if (filepath.length() == 0) {
-          if (photoFiles.size() > 0) {
-            break;
-          } else {
-            out.println("최소 한개의 사진파일을 등록해야 합니다.");
-            continue;
-          }
-        }
-        photoFiles.add(new PhotoFile().setFilepath(filepath).setBoardNo(photoBoard.getNo()));
-
-      }
-
+      List<PhotoFile> photoFiles = inputPhotoFiles(in, out);
       for (PhotoFile photoFile : photoFiles) {
+        photoFile.setBoardNo(photoBoard.getNo());
         photoFileDao.insert(photoFile);
       }
       out.println("새 사진 게시글을 등록했습니다.");
@@ -81,5 +57,27 @@ public class PhotoBoardAddServlet implements Servlet {
     } else {
       out.println("사진 게시글 등록에 실패했습니다.");
     }
+  }
+
+  private List<PhotoFile> inputPhotoFiles(Scanner in, PrintStream out) {
+    out.println("최소 한개의 사진파일을 등록해야 합니다.");
+    out.println("파일명 입력 없이  엔터를 치면 파일 추가를 마칩니다.");
+
+    ArrayList<PhotoFile> photoFiles = new ArrayList<>();
+
+    while (true) {
+      String filepath = Prompt.getString(in, out, "사진 파일?");
+
+      if (filepath.length() == 0) {
+        if (photoFiles.size() > 0) {
+          break;
+        } else {
+          out.println("최소 한개의 사진파일을 등록해야 합니다.");
+          continue;
+        }
+      }
+      photoFiles.add(new PhotoFile().setFilepath(filepath));
+    }
+    return photoFiles;
   }
 }

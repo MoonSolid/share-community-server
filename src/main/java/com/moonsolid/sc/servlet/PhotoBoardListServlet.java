@@ -7,6 +7,7 @@ import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.Plan;
+import com.moonsolid.util.Prompt;
 
 public class PhotoBoardListServlet implements Servlet {
 
@@ -20,11 +21,8 @@ public class PhotoBoardListServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("일정번호 : ");
-    out.println("!{}!");
-    out.flush();
 
-    int planNo = Integer.parseInt(in.nextLine());
+    int planNo = Prompt.getInt(in, out, "일정번호 : ");
 
     Plan plan = planDao.findByNo(planNo);
 

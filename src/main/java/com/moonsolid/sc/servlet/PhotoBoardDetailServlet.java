@@ -7,6 +7,7 @@ import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.PhotoFile;
+import com.moonsolid.util.Prompt;
 
 public class PhotoBoardDetailServlet implements Servlet {
 
@@ -21,11 +22,7 @@ public class PhotoBoardDetailServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("사진 게시글번호 : ");
-    out.println("!{}!");
-    out.flush();
-    int no = Integer.parseInt(in.nextLine());
-
+    int no = Prompt.getInt(in, out, "사진 게시글번호? ");
 
     PhotoBoard photoBoard = photoBoardDao.findByNo(no);
 
@@ -35,6 +32,7 @@ public class PhotoBoardDetailServlet implements Servlet {
       out.printf("등록일: %s\n", photoBoard.getCreatedDate());
       out.printf("조회수: %d\n", photoBoard.getViewCount());
       out.printf("장소: %s\n", photoBoard.getPlan().getPlace());
+      out.println("사진 파일:");
 
       List<PhotoFile> photoFiles = photoFileDao.findAll(photoBoard.getNo());
       for (PhotoFile photoFile : photoFiles) {

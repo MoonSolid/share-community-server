@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
+import com.moonsolid.util.Prompt;
 
 public class PlanUpdateServlet implements Servlet {
 
@@ -16,11 +17,7 @@ public class PlanUpdateServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("일정 번호 : ");
-    out.println("!{}!");
-    out.flush();
-
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "일정 번호 : ");
 
     Plan old = planDao.findByNo(no);
     if (old == null) {
@@ -28,13 +25,13 @@ public class PlanUpdateServlet implements Servlet {
       return;
     }
 
-    out.printf("(기존 내용 - %s) 일정 내용 :\n", old.getDescription());
-    out.println("!{}!");
-    out.flush();
-
     Plan plan = new Plan();
-    plan.setDescription(in.nextLine());
+
     plan.setNo(no);
+    plan.setPlace(Prompt.getString(in, out, "일정 장소(기존 장소 : (%s))", plan.getPlace()));
+    plan.setDescription(Prompt.getString(in, out, "일정 내용(기존 내용 : (%s))", plan.getDescription()));
+    plan.setMemo(Prompt.getString(in, out, "일정 메모(기존 메모 : (%s))", plan.getMemo()));
+    plan.setCost(Prompt.getString(in, out, "일정 비용(기존 비용 : (%s))", plan.getCost()));
 
     if (planDao.update(plan) > 0) {
       out.println("일정을 변경했습니다.");

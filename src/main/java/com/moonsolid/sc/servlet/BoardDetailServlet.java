@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.domain.Board;
+import com.moonsolid.util.Prompt;
 
 public class BoardDetailServlet implements Servlet {
 
@@ -16,8 +17,7 @@ public class BoardDetailServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("게시글 번호 : \n!{}!");
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "게시글 번호 : ");
 
     Board board = boardDao.findByNo(no);
 
