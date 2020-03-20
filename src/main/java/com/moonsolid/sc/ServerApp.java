@@ -39,6 +39,7 @@ import com.moonsolid.sc.servlet.PlanDetailServlet;
 import com.moonsolid.sc.servlet.PlanListServlet;
 import com.moonsolid.sc.servlet.PlanUpdateServlet;
 import com.moonsolid.sc.servlet.Servlet;
+import com.moonsolid.util.ConnectionFactory;
 
 public class ServerApp {
 
@@ -73,6 +74,8 @@ public class ServerApp {
   public void service() {
 
     notifyApplicationInitialized();
+
+    ConnectionFactory conFactory = (ConnectionFactory) context.get("connectionFactory");
 
     BoardDao boardDao = (BoardDao) context.get("boardDao");
     PlanDao planDao = (PlanDao) context.get("planDao");

@@ -20,7 +20,8 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public int insert(Member member) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = conFactory.getConnection(); //
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("insert into sc_member(name, email, pwd, tel, photo) "
           + "values('" + member.getName() + "', '" //
@@ -86,7 +87,8 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public int update(Member member) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = conFactory.getConnection(); //
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update sc_member set name= '" //
           + member.getName() + "', email='" //
@@ -102,7 +104,8 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = conFactory.getConnection(); //
+        Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("delete from sc_member where member_id=" + no);
 
       return result;

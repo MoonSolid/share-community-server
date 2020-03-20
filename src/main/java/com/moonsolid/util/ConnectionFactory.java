@@ -18,5 +18,4 @@ public class ConnectionFactory {
   public Connection getConnection() throws Exception {
     return DriverManager.getConnection(jdbcUrl, username, password);
   }
-
 }
