@@ -130,6 +130,7 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
+          conFactory.removeConnection();
           System.out.println("--------------------------------------");
         });
 
