@@ -76,7 +76,8 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    ConnectionFactory conFactory = (ConnectionFactory) context.get("connectionFactory");
+    ConnectionFactory conFactory = (ConnectionFactory) context.get(//
+        "connectionFactory");
 
     BoardDao boardDao = (BoardDao) context.get("boardDao");
     PlanDao planDao = (PlanDao) context.get("planDao");
@@ -105,18 +106,14 @@ public class ServerApp {
 
     servletMap.put("/photoboard/list", new PhotoBoardListServlet( //
         photoBoardDao, planDao));
-
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet( //
         photoBoardDao, photoFileDao));
-
     servletMap.put("/photoboard/add", new PhotoBoardAddServlet( //
-        photoBoardDao, planDao, photoFileDao));
-
+        conFactory, photoBoardDao, planDao, photoFileDao));
     servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet( //
-        photoBoardDao, photoFileDao));
-
+        conFactory, photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet( //
-        photoBoardDao, photoFileDao));
+        conFactory, photoBoardDao, photoFileDao));
 
 
 

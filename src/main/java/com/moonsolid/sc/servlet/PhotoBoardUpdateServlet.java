@@ -1,23 +1,28 @@
 package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import com.moonsolid.sc.DataLoaderListener;
 import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.PhotoFile;
+import com.moonsolid.util.ConnectionFactory;
 import com.moonsolid.util.Prompt;
 
 public class PhotoBoardUpdateServlet implements Servlet {
 
+  ConnectionFactory conFactory;
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
 
-  public PhotoBoardUpdateServlet(PhotoBoardDao photoBoardDao, //
+  public PhotoBoardUpdateServlet(//
+      ConnectionFactory conFactory, //
+      PhotoBoardDao photoBoardDao, //
       PhotoFileDao photoFileDao) {
+    this.conFactory = conFactory;
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
   }
@@ -39,7 +44,9 @@ public class PhotoBoardUpdateServlet implements Servlet {
         old.getTitle()));
     photoBoard.setNo(no);
 
-    DataLoaderListener.con.setAutoCommit(false);
+    Connection con = conFactory.getConnection();
+    con.setAutoCommit(false);
+
     try {
       if (photoBoardDao.update(photoBoard) == 0) {
         throw new Exception("사진 게시글 변경에 실패했습니다.");
@@ -64,14 +71,14 @@ public class PhotoBoardUpdateServlet implements Servlet {
           photoFileDao.insert(photoFile);
         }
       }
-      DataLoaderListener.con.commit();
+      con.commit();
       out.println("사진 게시글을 변경했습니다.");
 
     } catch (Exception e) {
-      DataLoaderListener.con.rollback();
+      con.rollback();
       out.println(e.getMessage());
     } finally {
-      DataLoaderListener.con.setAutoCommit(true);
+      con.setAutoCommit(true);
     }
   }
 

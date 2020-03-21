@@ -1,18 +1,24 @@
 package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
+import java.sql.Connection;
 import java.util.Scanner;
-import com.moonsolid.sc.DataLoaderListener;
 import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
+import com.moonsolid.util.ConnectionFactory;
 import com.moonsolid.util.Prompt;
 
 public class PhotoBoardDeleteServlet implements Servlet {
 
+  ConnectionFactory conFactory;
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
 
-  public PhotoBoardDeleteServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
+  public PhotoBoardDeleteServlet(//
+      ConnectionFactory conFactory, //
+      PhotoBoardDao photoBoardDao, //
+      PhotoFileDao photoFileDao) {
+    this.conFactory = conFactory;
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
   }
@@ -22,20 +28,22 @@ public class PhotoBoardDeleteServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    DataLoaderListener.con.setAutoCommit(false);
+    Connection con = conFactory.getConnection();
+
+    con.setAutoCommit(false);
 
     try {
       photoFileDao.deleteAll(no);
-      if (photoBoardDao.delete(no) > 0) {
+      if (photoBoardDao.delete(no) == 0) {
         throw new Exception("사진 게시글이 없습니다");
       }
-      DataLoaderListener.con.commit();
+      con.commit();
       out.println("사진 게시글을 삭제했습니다.");
     } catch (Exception e) {
-      DataLoaderListener.con.rollback();
+      con.rollback();
       out.println(e.getMessage());
     } finally {
-      DataLoaderListener.con.setAutoCommit(true);
+      con.setAutoCommit(true);
     }
   }
 }
