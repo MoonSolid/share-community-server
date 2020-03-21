@@ -39,6 +39,7 @@ import com.moonsolid.sc.servlet.PlanDetailServlet;
 import com.moonsolid.sc.servlet.PlanListServlet;
 import com.moonsolid.sc.servlet.PlanUpdateServlet;
 import com.moonsolid.sc.servlet.Servlet;
+import com.moonsolid.sql.ConnectionProxy;
 import com.moonsolid.util.ConnectionFactory;
 
 public class ServerApp {
@@ -130,7 +131,14 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-          conFactory.removeConnection();
+          ConnectionProxy con = (ConnectionProxy) conFactory.removeConnection();
+          if (con != null) {
+            try {
+              con.realClose();
+            } catch (Exception e) {
+
+            }
+          }
           System.out.println("--------------------------------------");
         });
 
