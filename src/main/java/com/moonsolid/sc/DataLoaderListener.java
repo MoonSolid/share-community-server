@@ -7,8 +7,8 @@ import com.moonsolid.sc.dao.mariadb.MemberDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PhotoBoardDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PhotoFileDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PlanDaoImpl;
+import com.moonsolid.sql.DataSource;
 import com.moonsolid.sql.PlatformTransactionManager;
-import com.moonsolid.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -20,17 +20,18 @@ public class DataLoaderListener implements ApplicationContextListener {
       String username = "study";
       String password = "1111";
 
-      ConnectionFactory conFactory = new ConnectionFactory(jdbcUrl, username, password);
-      context.put("connectionFactory", conFactory);
 
+      DataSource dataSource = new DataSource(//
+          jdbcUrl, username, password);
+      context.put("dataSource", dataSource);
 
-      context.put("boardDao", new BoardDaoImpl(conFactory));
-      context.put("planDao", new PlanDaoImpl(conFactory));
-      context.put("memberDao", new MemberDaoImpl(conFactory));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
-      context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
+      context.put("boardDao", new BoardDaoImpl(dataSource));
+      context.put("planDao", new PlanDaoImpl(dataSource));
+      context.put("memberDao", new MemberDaoImpl(dataSource));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(dataSource));
+      context.put("photoFileDao", new PhotoFileDaoImpl(dataSource));
 
-      PlatformTransactionManager txManager = new PlatformTransactionManager(conFactory);
+      PlatformTransactionManager txManager = new PlatformTransactionManager(dataSource);
       context.put("transactionManager", txManager);
 
 
@@ -40,6 +41,10 @@ public class DataLoaderListener implements ApplicationContextListener {
   }
 
   @Override
-  public void contextDestroyed(Map<String, Object> context) {}
+  public void contextDestroyed(Map<String, Object> context) {
+
+    DataSource dataSource = (DataSource) context.get("dataSource");
+    dataSource.clean();
+  }
 
 }

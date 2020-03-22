@@ -8,19 +8,19 @@ import java.util.List;
 import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.Plan;
-import com.moonsolid.util.ConnectionFactory;
+import com.moonsolid.sql.DataSource;
 
 public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public PhotoBoardDaoImpl(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public PhotoBoardDaoImpl(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override
   public int insert(PhotoBoard photoBoard) throws Exception {
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = dataSource.getConnection(); Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate( //
           "insert into sc_photo(titl,plan_id) values('" //
@@ -37,7 +37,7 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
   @Override
   public List<PhotoBoard> findAllByPlanNo(int planNo) throws Exception {
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(//
             "select photo_id, titl, cdt, vw_cnt, plan_id" //
@@ -63,7 +63,7 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
   @Override
   public PhotoBoard findByNo(int no) throws Exception {
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(//
             "select" //
@@ -100,7 +100,7 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
   @Override
   public int update(PhotoBoard photoBoard) throws Exception {
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = dataSource.getConnection(); Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate( //
           "update sc_photo set titl='" //
               + photoBoard.getTitle() //
@@ -111,7 +111,7 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
   @Override
   public int delete(int no) throws Exception {
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = dataSource.getConnection(); Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate( //
           "delete from sc_photo" //
               + " where photo_id=" + no);

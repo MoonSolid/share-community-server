@@ -39,9 +39,8 @@ import com.moonsolid.sc.servlet.PlanDetailServlet;
 import com.moonsolid.sc.servlet.PlanListServlet;
 import com.moonsolid.sc.servlet.PlanUpdateServlet;
 import com.moonsolid.sc.servlet.Servlet;
-import com.moonsolid.sql.ConnectionProxy;
+import com.moonsolid.sql.DataSource;
 import com.moonsolid.sql.PlatformTransactionManager;
-import com.moonsolid.util.ConnectionFactory;
 
 public class ServerApp {
 
@@ -77,8 +76,7 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    ConnectionFactory conFactory = (ConnectionFactory) context.get(//
-        "connectionFactory");
+    DataSource dataSource = (DataSource) context.get("dataSource");
 
     BoardDao boardDao = (BoardDao) context.get("boardDao");
     PlanDao planDao = (PlanDao) context.get("planDao");
@@ -131,14 +129,7 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-          ConnectionProxy con = (ConnectionProxy) conFactory.removeConnection();
-          if (con != null) {
-            try {
-              con.realClose();
-            } catch (Exception e) {
-
-            }
-          }
+          dataSource.removeConnection();
           System.out.println("--------------------------------------");
         });
 

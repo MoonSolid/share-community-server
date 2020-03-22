@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.domain.Member;
-import com.moonsolid.util.ConnectionFactory;
+import com.moonsolid.sql.DataSource;
 
 public class MemberDaoImpl implements MemberDao {
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public MemberDaoImpl(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public MemberDaoImpl(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override
   public int insert(Member member) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("insert into sc_member(name, email, pwd, tel, photo) "
@@ -37,7 +37,7 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public List<Member> findAll() throws Exception {
 
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(//
             "select member_id, name, email, tel, cdt from sc_member")) {
@@ -63,7 +63,7 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public Member findByNo(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(//
             "select member_id, name, email, pwd, tel, photo" + " from sc_member"
@@ -87,7 +87,7 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public int update(Member member) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update sc_member set name= '" //
@@ -104,7 +104,7 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("delete from sc_member where member_id=" + no);
 
@@ -115,7 +115,7 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public List<Member> findByKeyword(String keyword) throws Exception {
 
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(//
             "select member_id, name, email, tel, cdt" //

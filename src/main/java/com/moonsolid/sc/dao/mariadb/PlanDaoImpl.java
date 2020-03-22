@@ -7,20 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
-import com.moonsolid.util.ConnectionFactory;
+import com.moonsolid.sql.DataSource;
 
 public class PlanDaoImpl implements PlanDao {
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public PlanDaoImpl(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public PlanDaoImpl(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
+
 
   @Override
   public int insert(Plan plan) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = dataSource.getConnection(); Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate(
           "insert into sc_plan(place, cont, memo, cost) " + "values('" + plan.getPlace() + "', '" //
@@ -35,7 +36,7 @@ public class PlanDaoImpl implements PlanDao {
   @Override
   public List<Plan> findAll() throws Exception {
 
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(//
             "select plan_id, place, cont, memo, cost from sc_plan")) {
@@ -61,7 +62,7 @@ public class PlanDaoImpl implements PlanDao {
   @Override
   public Plan findByNo(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(//
             "select plan_id, place, cont, memo, cost" + " from sc_plan" + " where plan_id=" + no)) {
@@ -84,7 +85,7 @@ public class PlanDaoImpl implements PlanDao {
   @Override
   public int update(Plan plan) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = dataSource.getConnection(); Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("update sc_plan set place= '" //
           + plan.getPlace() + "', cont='" //
           + plan.getDescription() + "', memo='" //
@@ -98,7 +99,7 @@ public class PlanDaoImpl implements PlanDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = dataSource.getConnection(); Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("delete from sc_plan where plan_id=" + no);
 
