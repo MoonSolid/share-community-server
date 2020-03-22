@@ -7,6 +7,7 @@ import com.moonsolid.sc.dao.mariadb.MemberDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PhotoBoardDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PhotoFileDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PlanDaoImpl;
+import com.moonsolid.sql.PlatformTransactionManager;
 import com.moonsolid.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
@@ -20,6 +21,7 @@ public class DataLoaderListener implements ApplicationContextListener {
       String password = "1111";
 
       ConnectionFactory conFactory = new ConnectionFactory(jdbcUrl, username, password);
+      context.put("connectionFactory", conFactory);
 
 
       context.put("boardDao", new BoardDaoImpl(conFactory));
@@ -27,7 +29,9 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("memberDao", new MemberDaoImpl(conFactory));
       context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
       context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
-      context.put("connectionFactory", conFactory);
+
+      PlatformTransactionManager txManager = new PlatformTransactionManager(conFactory);
+      context.put("transactionManager", txManager);
 
 
     } catch (Exception e) {

@@ -1,7 +1,6 @@
 package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,20 +8,20 @@ import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.PhotoFile;
-import com.moonsolid.util.ConnectionFactory;
+import com.moonsolid.sql.PlatformTransactionManager;
 import com.moonsolid.util.Prompt;
 
 public class PhotoBoardUpdateServlet implements Servlet {
 
-  ConnectionFactory conFactory;
+  PlatformTransactionManager txManager;
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
 
   public PhotoBoardUpdateServlet(//
-      ConnectionFactory conFactory, //
+      PlatformTransactionManager txManager, //
       PhotoBoardDao photoBoardDao, //
       PhotoFileDao photoFileDao) {
-    this.conFactory = conFactory;
+    this.txManager = txManager;
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
   }
@@ -44,8 +43,7 @@ public class PhotoBoardUpdateServlet implements Servlet {
         old.getTitle()));
     photoBoard.setNo(no);
 
-    Connection con = conFactory.getConnection();
-    con.setAutoCommit(false);
+    txManager.beginTransaction();
 
     try {
       if (photoBoardDao.update(photoBoard) == 0) {
@@ -71,14 +69,12 @@ public class PhotoBoardUpdateServlet implements Servlet {
           photoFileDao.insert(photoFile);
         }
       }
-      con.commit();
+      txManager.commit();
       out.println("사진 게시글을 변경했습니다.");
 
     } catch (Exception e) {
-      con.rollback();
+      txManager.rollback();
       out.println(e.getMessage());
-    } finally {
-      con.setAutoCommit(true);
     }
   }
 
@@ -99,17 +95,15 @@ public class PhotoBoardUpdateServlet implements Servlet {
     while (true) {
       String filepath = Prompt.getString(in, out, "사진 파일? ");
 
-      if (filepath.length() == 0) {
+      if (filepath.length() == 0)
         if (photoFiles.size() > 0) {
           break;
         } else {
           out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
           continue;
         }
-      }
       photoFiles.add(new PhotoFile().setFilepath(filepath));
     }
-
     return photoFiles;
   }
 }

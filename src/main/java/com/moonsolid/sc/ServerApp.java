@@ -40,6 +40,7 @@ import com.moonsolid.sc.servlet.PlanListServlet;
 import com.moonsolid.sc.servlet.PlanUpdateServlet;
 import com.moonsolid.sc.servlet.Servlet;
 import com.moonsolid.sql.ConnectionProxy;
+import com.moonsolid.sql.PlatformTransactionManager;
 import com.moonsolid.util.ConnectionFactory;
 
 public class ServerApp {
@@ -85,6 +86,10 @@ public class ServerApp {
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
     PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
 
+    PlatformTransactionManager txManager = //
+        (PlatformTransactionManager) context.get("transactionManager");
+
+
     servletMap.put("/board/list", new BoardListServlet(boardDao));
     servletMap.put("/board/add", new BoardAddServlet(boardDao));
     servletMap.put("/board/detail", new BoardDetailServlet(boardDao));
@@ -109,13 +114,11 @@ public class ServerApp {
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet( //
         photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/add", new PhotoBoardAddServlet( //
-        conFactory, photoBoardDao, planDao, photoFileDao));
+        txManager, photoBoardDao, planDao, photoFileDao));
     servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet( //
-        conFactory, photoBoardDao, photoFileDao));
+        txManager, photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet( //
-        conFactory, photoBoardDao, photoFileDao));
-
-
+        txManager, photoBoardDao, photoFileDao));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 

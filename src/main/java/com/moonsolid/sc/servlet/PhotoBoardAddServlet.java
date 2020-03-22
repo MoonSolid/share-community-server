@@ -1,7 +1,6 @@
 package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -11,22 +10,22 @@ import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.PhotoFile;
 import com.moonsolid.sc.domain.Plan;
-import com.moonsolid.util.ConnectionFactory;
+import com.moonsolid.sql.PlatformTransactionManager;
 import com.moonsolid.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
 
-  ConnectionFactory conFactory;
+  PlatformTransactionManager txManager;
   PhotoBoardDao photoBoardDao;
   PlanDao planDao;
   PhotoFileDao photoFileDao;
 
 
   public PhotoBoardAddServlet(//
-      ConnectionFactory conFactory, PhotoBoardDao photoBoardDao, //
+      PlatformTransactionManager txManager, PhotoBoardDao photoBoardDao, //
       PlanDao planDao, //
       PhotoFileDao photoFileDao) {
-    this.conFactory = conFactory;
+    this.txManager = txManager;
     this.photoBoardDao = photoBoardDao;
     this.planDao = planDao;
     this.photoFileDao = photoFileDao;
@@ -48,9 +47,7 @@ public class PhotoBoardAddServlet implements Servlet {
 
     photoBoard.setPlan(plan);
 
-    Connection con = conFactory.getConnection();
-
-    con.setAutoCommit(false);
+    txManager.beginTransaction();
 
     try {
       if (photoBoardDao.insert(photoBoard) == 0) {
@@ -61,14 +58,12 @@ public class PhotoBoardAddServlet implements Servlet {
         photoFile.setBoardNo(photoBoard.getNo());
         photoFileDao.insert(photoFile);
       }
-      con.commit();
+      txManager.commit();
       out.println("새 사진 게시글을 등록했습니다.");
 
     } catch (Exception e) {
-      con.rollback();
+      txManager.rollback();
       out.println(e.getMessage());
-    } finally {
-      con.setAutoCommit(true);
     }
   }
 
