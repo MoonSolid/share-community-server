@@ -22,6 +22,7 @@ import com.moonsolid.sc.servlet.BoardDeleteServlet;
 import com.moonsolid.sc.servlet.BoardDetailServlet;
 import com.moonsolid.sc.servlet.BoardListServlet;
 import com.moonsolid.sc.servlet.BoardUpdateServlet;
+import com.moonsolid.sc.servlet.LoginServlet;
 import com.moonsolid.sc.servlet.MemberAddServlet;
 import com.moonsolid.sc.servlet.MemberDeleteServlet;
 import com.moonsolid.sc.servlet.MemberDetailServlet;
@@ -118,6 +119,8 @@ public class ServerApp {
     servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet( //
         txManager, photoBoardDao, photoFileDao));
 
+    servletMap.put("/auth/login", new LoginServlet(memberDao));
+
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 
       System.out.println("클라이언트 연결 대기중...");
@@ -125,7 +128,6 @@ public class ServerApp {
       while (true) {
         Socket socket = serverSocket.accept();
         System.out.println("클라이언트와 연결되었습니다.");
-
 
         executorService.submit(() -> {
           processRequest(socket);
