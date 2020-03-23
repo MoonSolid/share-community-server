@@ -11,6 +11,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.dao.MemberDao;
@@ -40,8 +41,8 @@ import com.moonsolid.sc.servlet.PlanDetailServlet;
 import com.moonsolid.sc.servlet.PlanListServlet;
 import com.moonsolid.sc.servlet.PlanUpdateServlet;
 import com.moonsolid.sc.servlet.Servlet;
-import com.moonsolid.sql.DataSource;
 import com.moonsolid.sql.PlatformTransactionManager;
+import com.moonsolid.sql.SqlSessionFactoryProxy;
 
 public class ServerApp {
 
@@ -77,7 +78,9 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    DataSource dataSource = (DataSource) context.get("dataSource");
+    SqlSessionFactory sqlSessionFactory = //
+        (SqlSessionFactory) context.get("sqlSessionFactory");
+
 
     BoardDao boardDao = (BoardDao) context.get("boardDao");
     PlanDao planDao = (PlanDao) context.get("planDao");
@@ -111,7 +114,7 @@ public class ServerApp {
     servletMap.put("/photoboard/list", new PhotoBoardListServlet( //
         photoBoardDao, planDao));
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet( //
-        photoBoardDao, photoFileDao));
+        photoBoardDao));
     servletMap.put("/photoboard/add", new PhotoBoardAddServlet( //
         txManager, photoBoardDao, planDao, photoFileDao));
     servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet( //
@@ -131,7 +134,8 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-          dataSource.removeConnection();
+          ((SqlSessionFactoryProxy) sqlSessionFactory).closeSession();
+
           System.out.println("--------------------------------------");
         });
 
@@ -143,7 +147,6 @@ public class ServerApp {
     } catch (Exception e) {
       System.out.println("서버 준비 중 오류 발생");
     }
-
 
     executorService.shutdown();
 

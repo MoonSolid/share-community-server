@@ -1,10 +1,8 @@
 package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Scanner;
 import com.moonsolid.sc.dao.PhotoBoardDao;
-import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.PhotoFile;
 import com.moonsolid.util.Prompt;
@@ -12,11 +10,10 @@ import com.moonsolid.util.Prompt;
 public class PhotoBoardDetailServlet implements Servlet {
 
   PhotoBoardDao photoBoardDao;
-  PhotoFileDao photoFileDao;
 
-  public PhotoBoardDetailServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
+  public PhotoBoardDetailServlet(//
+      PhotoBoardDao photoBoardDao) {
     this.photoBoardDao = photoBoardDao;
-    this.photoFileDao = photoFileDao;
   }
 
   @Override
@@ -34,8 +31,7 @@ public class PhotoBoardDetailServlet implements Servlet {
       out.printf("장소: %s\n", photoBoard.getPlan().getPlace());
       out.println("사진 파일:");
 
-      List<PhotoFile> photoFiles = photoFileDao.findAll(photoBoard.getNo());
-      for (PhotoFile photoFile : photoFiles) {
+      for (PhotoFile photoFile : photoBoard.getFiles()) {
         out.printf("> %s\n", photoFile.getFilepath());
       }
     } else {
