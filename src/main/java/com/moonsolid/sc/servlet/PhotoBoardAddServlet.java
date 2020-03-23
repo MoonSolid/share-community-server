@@ -11,21 +11,24 @@ import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.PhotoFile;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sql.PlatformTransactionManager;
+import com.moonsolid.sql.TransactionCallback;
+import com.moonsolid.sql.TransactionTemplate;
 import com.moonsolid.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
 
-  PlatformTransactionManager txManager;
+  TransactionTemplate transactionTemplate;
   PhotoBoardDao photoBoardDao;
   PlanDao planDao;
   PhotoFileDao photoFileDao;
 
 
   public PhotoBoardAddServlet(//
-      PlatformTransactionManager txManager, PhotoBoardDao photoBoardDao, //
+      PlatformTransactionManager txManager, //
+      PhotoBoardDao photoBoardDao, //
       PlanDao planDao, //
       PhotoFileDao photoFileDao) {
-    this.txManager = txManager;
+    this.transactionTemplate = new TransactionTemplate(txManager);
     this.photoBoardDao = photoBoardDao;
     this.planDao = planDao;
     this.photoFileDao = photoFileDao;
@@ -35,7 +38,6 @@ public class PhotoBoardAddServlet implements Servlet {
   public void service(Scanner in, PrintStream out) throws Exception {
 
     PhotoBoard photoBoard = new PhotoBoard();
-
     photoBoard.setTitle(Prompt.getString(in, out, "제목 : "));
 
     int planNo = Prompt.getInt(in, out, "일정번호 : ");
@@ -47,24 +49,24 @@ public class PhotoBoardAddServlet implements Servlet {
 
     photoBoard.setPlan(plan);
 
-    txManager.beginTransaction();
+    List<PhotoFile> photoFiles = inputPhotoFiles(in, out);
 
-    try {
-      if (photoBoardDao.insert(photoBoard) == 0) {
-        throw new Exception("사진 게시글 등록에 실패했습니다.");
-      }
-      List<PhotoFile> photoFiles = inputPhotoFiles(in, out);
-      for (PhotoFile photoFile : photoFiles) {
-        photoFile.setBoardNo(photoBoard.getNo());
-        photoFileDao.insert(photoFile);
-      }
-      txManager.commit();
-      out.println("새 사진 게시글을 등록했습니다.");
+    transactionTemplate.execute(new TransactionCallback() {
+      @Override
+      public Object doInTransaction() throws Exception {
 
-    } catch (Exception e) {
-      txManager.rollback();
-      out.println(e.getMessage());
-    }
+        if (photoBoardDao.insert(photoBoard) == 0) {
+          throw new Exception("사진 게시글 등록에 실패했습니다.");
+        }
+        for (PhotoFile photoFile : photoFiles) {
+          photoFile.setBoardNo(photoBoard.getNo());
+          photoFileDao.insert(photoFile);
+        }
+        out.println("새 사진 게시글을 등록했습니다.");
+
+        return null;
+      }
+    });
   }
 
   private List<PhotoFile> inputPhotoFiles(Scanner in, PrintStream out) {
