@@ -50,6 +50,8 @@ public class PhotoBoardAddServlet implements Servlet {
     photoBoard.setPlan(plan);
 
     List<PhotoFile> photoFiles = inputPhotoFiles(in, out);
+    photoBoard.setFiles(photoFiles);
+
 
     transactionTemplate.execute(new TransactionCallback() {
       @Override
@@ -58,10 +60,7 @@ public class PhotoBoardAddServlet implements Servlet {
         if (photoBoardDao.insert(photoBoard) == 0) {
           throw new Exception("사진 게시글 등록에 실패했습니다.");
         }
-        for (PhotoFile photoFile : photoFiles) {
-          photoFile.setBoardNo(photoBoard.getNo());
-          photoFileDao.insert(photoFile);
-        }
+        photoFileDao.insert(photoBoard);
         out.println("새 사진 게시글을 등록했습니다.");
 
         return null;

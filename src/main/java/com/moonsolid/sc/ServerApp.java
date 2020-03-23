@@ -39,6 +39,7 @@ import com.moonsolid.sc.servlet.PlanAddServlet;
 import com.moonsolid.sc.servlet.PlanDeleteServlet;
 import com.moonsolid.sc.servlet.PlanDetailServlet;
 import com.moonsolid.sc.servlet.PlanListServlet;
+import com.moonsolid.sc.servlet.PlanSearchServlet;
 import com.moonsolid.sc.servlet.PlanUpdateServlet;
 import com.moonsolid.sc.servlet.Servlet;
 import com.moonsolid.sql.PlatformTransactionManager;
@@ -103,6 +104,7 @@ public class ServerApp {
     servletMap.put("/plan/detail", new PlanDetailServlet(planDao));
     servletMap.put("/plan/update", new PlanUpdateServlet(planDao));
     servletMap.put("/plan/delete", new PlanDeleteServlet(planDao));
+    servletMap.put("/plan/search", new PlanSearchServlet(planDao));
 
     servletMap.put("/member/list", new MemberListServlet(memberDao));
     servletMap.put("/member/add", new MemberAddServlet(memberDao));
