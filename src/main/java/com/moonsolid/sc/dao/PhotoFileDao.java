@@ -8,7 +8,5 @@ public interface PhotoFileDao {
 
   List<PhotoFile> findAll(int boardNo) throws Exception;
 
-  int update(PhotoFile photoFile) throws Exception;
-
   int deleteAll(int boardNo) throws Exception;
 }
