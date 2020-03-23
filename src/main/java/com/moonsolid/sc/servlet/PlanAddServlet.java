@@ -22,6 +22,7 @@ public class PlanAddServlet implements Servlet {
     plan.setDescription(Prompt.getString(in, out, "일정 내용 : "));
     plan.setMemo(Prompt.getString(in, out, "일정 메모 : "));
     plan.setCost(Prompt.getString(in, out, "일정 비용 : "));
+    plan.setTitle(Prompt.getString(in, out, "일정 명 : "));
 
     if (planDao.insert(plan) > 0) {
       out.println("새 일정을 등록했습니다.");

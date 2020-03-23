@@ -31,7 +31,7 @@ public class PhotoBoardListServlet implements Servlet {
       return;
     }
 
-    out.printf("일정장소: %s\n", plan.getPlace());
+    out.printf("일정명: %s\n", plan.getTitle());
     out.println("----------------------------------------------------------");
 
     List<PhotoBoard> photoBoards = photoBoardDao.findAllByPlanNo(planNo);

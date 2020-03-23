@@ -11,11 +11,12 @@ public class Plan implements Serializable {
   private String description;
   private String memo;
   private String cost;
+  private String title;
 
   @Override
   public String toString() {
     return "Plan [no=" + no + ", place=" + place + ", description=" + description + ", memo=" + memo
-        + ", cost=" + cost + "]";
+        + ", cost=" + cost + ", title=" + title + "]";
   }
 
 
@@ -27,14 +28,17 @@ public class Plan implements Serializable {
     plan.setDescription(data[2]);
     plan.setMemo(data[3]);
     plan.setCost(data[4]);
+    plan.setTitle(data[5]);
+
     return plan;
   }
 
 
   public String toCsvString() {
-    return String.format("%d,%s,%s,%s,%s\n", this.getNo(), this.getPlace(), this.getDescription(),
-        this.getMemo(), this.getCost());
+    return String.format("%d,%s,%s,%s,%s,%s\n", this.getNo(), this.getPlace(),
+        this.getDescription(), this.getMemo(), this.getCost(), this.getTitle());
   }
+
 
 
   @Override
@@ -46,8 +50,10 @@ public class Plan implements Serializable {
     result = prime * result + ((memo == null) ? 0 : memo.hashCode());
     result = prime * result + no;
     result = prime * result + ((place == null) ? 0 : place.hashCode());
+    result = prime * result + ((title == null) ? 0 : title.hashCode());
     return result;
   }
+
 
   @Override
   public boolean equals(Object obj) {
@@ -80,10 +86,23 @@ public class Plan implements Serializable {
         return false;
     } else if (!place.equals(other.place))
       return false;
+    if (title == null) {
+      if (other.title != null)
+        return false;
+    } else if (!title.equals(other.title))
+      return false;
     return true;
   }
 
 
+  public String getTitle() {
+    return title;
+  }
+
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
   public int getNo() {
     return no;

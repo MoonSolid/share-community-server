@@ -36,6 +36,8 @@ public class PlanUpdateServlet implements Servlet {
         String.format("일정 메모(기존 메모 : (%s))", old.getMemo()), old.getMemo()));
     plan.setCost(Prompt.getString(in, out, //
         String.format("일정 비용(기존 비용 : (%s))", old.getCost()), old.getCost()));
+    plan.setTitle(Prompt.getString(in, out, //
+        String.format("일정 제목(기존 제목 : (%s))", old.getTitle()), old.getTitle()));
 
     if (planDao.update(plan) > 0) {
       out.println("일정을 변경했습니다.");

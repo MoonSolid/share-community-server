@@ -28,6 +28,7 @@ public class PlanDetailServlet implements Servlet {
       out.printf("일정내용: %s\n", plan.getDescription());
       out.printf("일정메모: %s\n", plan.getMemo());
       out.printf("일정비용: %s\n", plan.getCost());
+      out.printf("일정명 : %s\n", plan.getTitle());
     } else {
       out.println("해당 번호의 일정 없습니다.");
     }

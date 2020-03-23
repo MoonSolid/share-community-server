@@ -2,22 +2,32 @@ package com.moonsolid.sc.domain;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
 public class PhotoBoard implements Serializable {
 
   private static final long serialVersionUID = 1L;
-
 
   int no;
   String title;
   Date createdDate;
   int viewCount;
   Plan plan;
+  List<PhotoFile> files;
+
 
   @Override
   public String toString() {
     return "PhotoBoard [no=" + no + ", title=" + title + ", createdDate=" + createdDate
-        + ", viewCount=" + viewCount + ", plan=" + plan + "]";
+        + ", viewCount=" + viewCount + ", plan=" + plan + ", files=" + files + "]";
+  }
+
+  public List<PhotoFile> getFiles() {
+    return files;
+  }
+
+  public void setFiles(List<PhotoFile> files) {
+    this.files = files;
   }
 
   public Plan getPlan() {
