@@ -19,6 +19,7 @@ public class PlanSearchServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
     HashMap<String, Object> params = new HashMap<>();
+
     String keyword = Prompt.getString(in, out, "일정명 검색: ");
     if (keyword.length() > 0) {
       params.put("title", keyword);

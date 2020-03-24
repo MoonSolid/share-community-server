@@ -39,16 +39,16 @@
 		#{title})
 	</insert>
 
-	<select id="selectPlan" resultMap="PlanMap" parameterMap="map">
-		<include refid="select1" />
+	<select id="selectPlan" resultMap="PlanMap" parameterType="map">
+		<include refid="select1"/>
 		titl
 		from sc_plan
 		<where>
 			<if test="title != null">titl like concat('%', #{title}, '%')</if>
-			<if test="place != null">place like concat('%', #{place}, '%')</if>
-			<if test="description != null">place like concat('%', #{description}, '%')</if>
-			<if test="memo != null">place like concat('%', #{memo}, '%')</if>
-			<if test="cost != null">place like concat('%', #{cost}, '%')</if>
+			<if test="description != null">and cont like concat('%', #{description}, '%')</if>
+			<if test="place != null">and place like concat('%', #{place}, '%')</if>
+			<if test="memo != null">and memo like concat('%', #{memo}, '%')</if>
+			<if test="cost != null">and cost like concat('%', #{cost}, '%')</if>
 		</where>
 	</select>
 
