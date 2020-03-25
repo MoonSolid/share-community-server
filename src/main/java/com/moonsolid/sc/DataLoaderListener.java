@@ -11,15 +11,11 @@ import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.dao.PlanDao;
-import com.moonsolid.sc.dao.mariadb.BoardDaoImpl;
-import com.moonsolid.sc.dao.mariadb.MemberDaoImpl;
-import com.moonsolid.sc.dao.mariadb.PhotoBoardDaoImpl;
-import com.moonsolid.sc.dao.mariadb.PhotoFileDaoImpl;
-import com.moonsolid.sc.dao.mariadb.PlanDaoImpl;
 import com.moonsolid.sc.service.impl.BoardServiceImpl;
 import com.moonsolid.sc.service.impl.MemberServiceImpl;
 import com.moonsolid.sc.service.impl.PhotoBoardServiceImpl;
 import com.moonsolid.sc.service.impl.PlanServiceImpl;
+import com.moonsolid.sql.MybatisDaoFactory;
 import com.moonsolid.sql.PlatformTransactionManager;
 import com.moonsolid.sql.SqlSessionFactoryProxy;
 
@@ -36,12 +32,13 @@ public class DataLoaderListener implements ApplicationContextListener {
           new SqlSessionFactoryBuilder().build(inputStream));
       context.put("sqlSessionFactory", sqlSessionFactory);
 
+      MybatisDaoFactory daoFactory = new MybatisDaoFactory(sqlSessionFactory);
 
-      BoardDao boardDao = new BoardDaoImpl(sqlSessionFactory);
-      PlanDao planDao = new PlanDaoImpl(sqlSessionFactory);
-      MemberDao memberDao = new MemberDaoImpl(sqlSessionFactory);
-      PhotoBoardDao photoBoardDao = new PhotoBoardDaoImpl(sqlSessionFactory);
-      PhotoFileDao photoFileDao = new PhotoFileDaoImpl(sqlSessionFactory);
+      BoardDao boardDao = daoFactory.createDao(BoardDao.class);
+      PlanDao planDao = daoFactory.createDao(PlanDao.class);
+      MemberDao memberDao = daoFactory.createDao(MemberDao.class);
+      PhotoBoardDao photoBoardDao = daoFactory.createDao(PhotoBoardDao.class);
+      PhotoFileDao photoFileDao = daoFactory.createDao(PhotoFileDao.class);
 
       PlatformTransactionManager txManager = //
           new PlatformTransactionManager(sqlSessionFactory);
