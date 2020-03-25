@@ -11,7 +11,7 @@ import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.dao.PlanDao;
-import com.moonsolid.sc.service.impl.BoardServiceImpl;
+import com.moonsolid.sc.service.impl.BoardServiceImpl2;
 import com.moonsolid.sc.service.impl.MemberServiceImpl;
 import com.moonsolid.sc.service.impl.PhotoBoardServiceImpl;
 import com.moonsolid.sc.service.impl.PlanServiceImpl;
@@ -46,7 +46,7 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("planService", new PlanServiceImpl(planDao));
       context.put("photoBoardService", //
           new PhotoBoardServiceImpl(txManager, photoBoardDao, photoFileDao));
-      context.put("boardService", new BoardServiceImpl(boardDao));
+      context.put("boardService", new BoardServiceImpl2(sqlSessionFactory));
       context.put("memberService", new MemberServiceImpl(memberDao));
 
     } catch (Exception e) {
