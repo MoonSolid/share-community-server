@@ -6,11 +6,20 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import com.moonsolid.sc.context.ApplicationContextListener;
+import com.moonsolid.sc.dao.BoardDao;
+import com.moonsolid.sc.dao.MemberDao;
+import com.moonsolid.sc.dao.PhotoBoardDao;
+import com.moonsolid.sc.dao.PhotoFileDao;
+import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.dao.mariadb.BoardDaoImpl;
 import com.moonsolid.sc.dao.mariadb.MemberDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PhotoBoardDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PhotoFileDaoImpl;
 import com.moonsolid.sc.dao.mariadb.PlanDaoImpl;
+import com.moonsolid.sc.service.impl.BoardServiceImpl;
+import com.moonsolid.sc.service.impl.MemberServiceImpl;
+import com.moonsolid.sc.service.impl.PhotoBoardServiceImpl;
+import com.moonsolid.sc.service.impl.PlanServiceImpl;
 import com.moonsolid.sql.PlatformTransactionManager;
 import com.moonsolid.sql.SqlSessionFactoryProxy;
 
@@ -25,19 +34,23 @@ public class DataLoaderListener implements ApplicationContextListener {
 
       SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryProxy( //
           new SqlSessionFactoryBuilder().build(inputStream));
+      context.put("sqlSessionFactory", sqlSessionFactory);
 
-      context.put("boardDao", new BoardDaoImpl(sqlSessionFactory));
-      context.put("planDao", new PlanDaoImpl(sqlSessionFactory));
-      context.put("memberDao", new MemberDaoImpl(sqlSessionFactory));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(sqlSessionFactory));
-      context.put("photoFileDao", new PhotoFileDaoImpl(sqlSessionFactory));
+
+      BoardDao boardDao = new BoardDaoImpl(sqlSessionFactory);
+      PlanDao planDao = new PlanDaoImpl(sqlSessionFactory);
+      MemberDao memberDao = new MemberDaoImpl(sqlSessionFactory);
+      PhotoBoardDao photoBoardDao = new PhotoBoardDaoImpl(sqlSessionFactory);
+      PhotoFileDao photoFileDao = new PhotoFileDaoImpl(sqlSessionFactory);
 
       PlatformTransactionManager txManager = //
           new PlatformTransactionManager(sqlSessionFactory);
 
-      context.put("transactionManager", txManager);
-      context.put("sqlSessionFactory", sqlSessionFactory);
-
+      context.put("planService", new PlanServiceImpl(planDao));
+      context.put("photoBoardService", //
+          new PhotoBoardServiceImpl(txManager, photoBoardDao, photoFileDao));
+      context.put("boardService", new BoardServiceImpl(boardDao));
+      context.put("memberService", new MemberServiceImpl(memberDao));
 
     } catch (Exception e) {
       e.printStackTrace();

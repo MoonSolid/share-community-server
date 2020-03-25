@@ -2,16 +2,16 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
+import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Prompt;
 
 public class PlanAddServlet implements Servlet {
 
-  PlanDao planDao;
+  PlanService planService;
 
-  public PlanAddServlet(PlanDao planDao) {
-    this.planDao = planDao;
+  public PlanAddServlet(PlanService planService) {
+    this.planService = planService;
   }
 
   @Override
@@ -24,7 +24,7 @@ public class PlanAddServlet implements Servlet {
     plan.setCost(Prompt.getString(in, out, "일정 비용 : "));
     plan.setTitle(Prompt.getString(in, out, "일정 명 : "));
 
-    if (planDao.insert(plan) > 0) {
+    if (planService.add(plan) > 0) {
       out.println("새 일정을 등록했습니다.");
     } else {
       out.println("일정 등록에 실패했습니다.");

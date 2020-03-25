@@ -13,11 +13,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.ibatis.session.SqlSessionFactory;
 import com.moonsolid.sc.context.ApplicationContextListener;
-import com.moonsolid.sc.dao.BoardDao;
-import com.moonsolid.sc.dao.MemberDao;
-import com.moonsolid.sc.dao.PhotoBoardDao;
-import com.moonsolid.sc.dao.PhotoFileDao;
-import com.moonsolid.sc.dao.PlanDao;
+import com.moonsolid.sc.service.BoardService;
+import com.moonsolid.sc.service.MemberService;
+import com.moonsolid.sc.service.PhotoBoardService;
+import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.sc.servlet.BoardAddServlet;
 import com.moonsolid.sc.servlet.BoardDeleteServlet;
 import com.moonsolid.sc.servlet.BoardDetailServlet;
@@ -42,7 +41,6 @@ import com.moonsolid.sc.servlet.PlanListServlet;
 import com.moonsolid.sc.servlet.PlanSearchServlet;
 import com.moonsolid.sc.servlet.PlanUpdateServlet;
 import com.moonsolid.sc.servlet.Servlet;
-import com.moonsolid.sql.PlatformTransactionManager;
 import com.moonsolid.sql.SqlSessionFactoryProxy;
 
 public class ServerApp {
@@ -82,49 +80,47 @@ public class ServerApp {
     SqlSessionFactory sqlSessionFactory = //
         (SqlSessionFactory) context.get("sqlSessionFactory");
 
+    PlanService planService = //
+        (PlanService) context.get("planService");
+    PhotoBoardService photoBoardService = //
+        (PhotoBoardService) context.get("photoBoardService");
+    BoardService boardService = //
+        (BoardService) context.get("boardService");
+    MemberService memberService = //
+        (MemberService) context.get("memberService");
 
-    BoardDao boardDao = (BoardDao) context.get("boardDao");
-    PlanDao planDao = (PlanDao) context.get("planDao");
-    MemberDao memberDao = (MemberDao) context.get("memberDao");
-    PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
-    PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
+    servletMap.put("/board/list", new BoardListServlet(boardService));
+    servletMap.put("/board/add", new BoardAddServlet(boardService));
+    servletMap.put("/board/detail", new BoardDetailServlet(boardService));
+    servletMap.put("/board/update", new BoardUpdateServlet(boardService));
+    servletMap.put("/board/delete", new BoardDeleteServlet(boardService));
 
-    PlatformTransactionManager txManager = //
-        (PlatformTransactionManager) context.get("transactionManager");
+    servletMap.put("/plan/list", new PlanListServlet(planService));
+    servletMap.put("/plan/add", new PlanAddServlet(planService));
+    servletMap.put("/plan/detail", new PlanDetailServlet(planService));
+    servletMap.put("/plan/update", new PlanUpdateServlet(planService));
+    servletMap.put("/plan/delete", new PlanDeleteServlet(planService));
+    servletMap.put("/plan/search", new PlanSearchServlet(planService));
 
-
-    servletMap.put("/board/list", new BoardListServlet(boardDao));
-    servletMap.put("/board/add", new BoardAddServlet(boardDao));
-    servletMap.put("/board/detail", new BoardDetailServlet(boardDao));
-    servletMap.put("/board/update", new BoardUpdateServlet(boardDao));
-    servletMap.put("/board/delete", new BoardDeleteServlet(boardDao));
-
-    servletMap.put("/plan/list", new PlanListServlet(planDao));
-    servletMap.put("/plan/add", new PlanAddServlet(planDao));
-    servletMap.put("/plan/detail", new PlanDetailServlet(planDao));
-    servletMap.put("/plan/update", new PlanUpdateServlet(planDao));
-    servletMap.put("/plan/delete", new PlanDeleteServlet(planDao));
-    servletMap.put("/plan/search", new PlanSearchServlet(planDao));
-
-    servletMap.put("/member/list", new MemberListServlet(memberDao));
-    servletMap.put("/member/add", new MemberAddServlet(memberDao));
-    servletMap.put("/member/detail", new MemberDetailServlet(memberDao));
-    servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
-    servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
-    servletMap.put("/member/search", new MemberSearchServlet(memberDao));
+    servletMap.put("/member/list", new MemberListServlet(memberService));
+    servletMap.put("/member/add", new MemberAddServlet(memberService));
+    servletMap.put("/member/detail", new MemberDetailServlet(memberService));
+    servletMap.put("/member/update", new MemberUpdateServlet(memberService));
+    servletMap.put("/member/delete", new MemberDeleteServlet(memberService));
+    servletMap.put("/member/search", new MemberSearchServlet(memberService));
 
     servletMap.put("/photoboard/list", new PhotoBoardListServlet( //
-        photoBoardDao, planDao));
+        photoBoardService, planService));
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet( //
-        photoBoardDao));
+        photoBoardService));
     servletMap.put("/photoboard/add", new PhotoBoardAddServlet( //
-        txManager, photoBoardDao, planDao, photoFileDao));
+        photoBoardService, planService));
     servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet( //
-        txManager, photoBoardDao, photoFileDao));
+        photoBoardService));
     servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet( //
-        txManager, photoBoardDao, photoFileDao));
+        photoBoardService));
 
-    servletMap.put("/auth/login", new LoginServlet(memberDao));
+    servletMap.put("/auth/login", new LoginServlet(memberService));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 

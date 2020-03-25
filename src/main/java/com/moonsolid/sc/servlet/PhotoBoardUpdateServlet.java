@@ -4,34 +4,25 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import com.moonsolid.sc.dao.PhotoBoardDao;
-import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.PhotoFile;
-import com.moonsolid.sql.PlatformTransactionManager;
-import com.moonsolid.sql.TransactionTemplate;
+import com.moonsolid.sc.service.PhotoBoardService;
 import com.moonsolid.util.Prompt;
 
 public class PhotoBoardUpdateServlet implements Servlet {
 
-  TransactionTemplate transactionTemplate;
-  PhotoBoardDao photoBoardDao;
-  PhotoFileDao photoFileDao;
+  PhotoBoardService photoBoardService;
 
-  public PhotoBoardUpdateServlet(//
-      PlatformTransactionManager txManager, //
-      PhotoBoardDao photoBoardDao, //
-      PhotoFileDao photoFileDao) {
-    this.transactionTemplate = new TransactionTemplate(txManager);
-    this.photoBoardDao = photoBoardDao;
-    this.photoFileDao = photoFileDao;
+  public PhotoBoardUpdateServlet(PhotoBoardService photoBoardService) {
+    this.photoBoardService = photoBoardService;
   }
+
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");
-    PhotoBoard old = photoBoardDao.findByNo(no);
+    PhotoBoard old = photoBoardService.get(no);
     if (old == null) {
       out.println("해당 번호의 사진 게시글이 없습니다.");
       return;
@@ -52,22 +43,11 @@ public class PhotoBoardUpdateServlet implements Servlet {
         "사진을 변경하시겠습니까?(y/N) ");
 
     if (response.equalsIgnoreCase("y")) {
-
       photoBoard.setFiles(inputPhotoFiles(in, out));
     }
 
-    transactionTemplate.execute(() -> {
-      if (photoBoardDao.update(photoBoard) == 0) {
-        throw new Exception("사진 게시글 변경에 실패했습니다.");
-      }
-
-      if (photoBoard.getFiles() != null) {
-        photoFileDao.deleteAll(no);
-        photoFileDao.insert(photoBoard);
-      }
-      out.println("사진 게시글을 변경했습니다.");
-      return null;
-    });
+    photoBoardService.update(photoBoard);
+    out.println("사진 게시글을 변경했습니다.");
   }
 
   private void printPhotoFiles(PrintStream out, PhotoBoard photoBoard) throws Exception {

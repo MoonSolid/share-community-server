@@ -2,16 +2,16 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.domain.Member;
+import com.moonsolid.sc.service.MemberService;
 import com.moonsolid.util.Prompt;
 
 public class MemberAddServlet implements Servlet {
 
-  MemberDao memberDao;
+  MemberService memberService;
 
-  public MemberAddServlet(MemberDao memberDao) {
-    this.memberDao = memberDao;
+  public MemberAddServlet(MemberService memberService) {
+    this.memberService = memberService;
   }
 
 
@@ -25,11 +25,11 @@ public class MemberAddServlet implements Servlet {
     member.setPhoto(Prompt.getString(in, out, "사진 : "));
     member.setTel(Prompt.getString(in, out, "전화번호 : "));
 
-    if (memberDao.insert(member) > 0) {
-      out.println("회원을 등록했습니다.");
+    if (memberService.add(member) > 0) {
+      out.println("회원을 저장했습니다.");
 
     } else {
-      out.println("회원 등록에 실패했습니다.");
+      out.println("저장에 실패했습니다.");
     }
   }
 }

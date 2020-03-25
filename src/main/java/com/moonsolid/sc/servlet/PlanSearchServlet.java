@@ -4,22 +4,21 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
+import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Prompt;
 
 public class PlanSearchServlet implements Servlet {
 
-  PlanDao planDao;
+  PlanService planService;
 
-  public PlanSearchServlet(PlanDao planDao) {
-    this.planDao = planDao;
+  public PlanSearchServlet(PlanService planService) {
+    this.planService = planService;
   }
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
     HashMap<String, Object> params = new HashMap<>();
-
     String keyword = Prompt.getString(in, out, "일정명 검색: ");
     if (keyword.length() > 0) {
       params.put("title", keyword);
@@ -49,7 +48,7 @@ public class PlanSearchServlet implements Servlet {
     out.println("[검색 결과]");
     out.println();
 
-    List<Plan> plans = planDao.findByKeyword(params);
+    List<Plan> plans = planService.search(params);
     for (Plan p : plans) {
       out.printf("%d,%s,%s,%s,%s,%s\n", p.getNo(), p.getTitle(), p.getDescription(), p.getPlace(),
           p.getMemo(), p.getCost());

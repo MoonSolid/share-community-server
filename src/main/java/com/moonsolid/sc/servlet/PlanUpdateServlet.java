@@ -2,16 +2,16 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
+import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Prompt;
 
 public class PlanUpdateServlet implements Servlet {
 
-  PlanDao planDao;
+  PlanService planService;
 
-  public PlanUpdateServlet(PlanDao planDao) {
-    this.planDao = planDao;
+  public PlanUpdateServlet(PlanService planService) {
+    this.planService = planService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class PlanUpdateServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "일정 번호 : ");
 
-    Plan old = planDao.findByNo(no);
+    Plan old = planService.get(no);
     if (old == null) {
       out.println("해당 번호의 일정이 없습니다.");
       return;
@@ -39,7 +39,7 @@ public class PlanUpdateServlet implements Servlet {
     plan.setTitle(Prompt.getString(in, out, //
         String.format("일정 제목(기존 제목 : (%s))", old.getTitle())));
 
-    if (planDao.update(plan) > 0) {
+    if (planService.update(plan) > 0) {
       out.println("일정을 변경했습니다.");
 
     } else {

@@ -2,24 +2,23 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.domain.Board;
+import com.moonsolid.sc.service.BoardService;
 import com.moonsolid.util.Prompt;
 
 public class BoardDetailServlet implements Servlet {
 
-  BoardDao boardDao;
+  BoardService boardService;
 
-  public BoardDetailServlet(BoardDao boardDao) {
-    this.boardDao = boardDao;
+  public BoardDetailServlet(BoardService boardService) {
+    this.boardService = boardService;
   }
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-
     int no = Prompt.getInt(in, out, "게시글 번호 : ");
 
-    Board board = boardDao.findByNo(no);
+    Board board = boardService.get(no);
 
     if (board != null) {
       out.printf("번호: %d\n", board.getNo());
@@ -27,7 +26,7 @@ public class BoardDetailServlet implements Servlet {
       out.printf("등록일: %s\n", board.getDate());
       out.printf("조회수: %d\n", board.getViewCount());
     } else {
-      out.println("해당 번호의 게시글 없습니다.");
+      out.println("해당 번호의 게시글이 없습니다.");
     }
   }
 }

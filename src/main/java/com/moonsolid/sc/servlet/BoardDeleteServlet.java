@@ -2,28 +2,27 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import com.moonsolid.sc.dao.BoardDao;
+import com.moonsolid.sc.service.BoardService;
 import com.moonsolid.util.Prompt;
 
 public class BoardDeleteServlet implements Servlet {
 
-  BoardDao boardDao;
+  BoardService boardService;
 
-  public BoardDeleteServlet(BoardDao boardDao) {
-    this.boardDao = boardDao;
+  public BoardDeleteServlet(BoardService boardService) {
+    this.boardService = boardService;
   }
 
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-
-
     int no = Prompt.getInt(in, out, "게시글 번호 : ");
 
-    if (boardDao.delete(no) > 0) {
+    if (boardService.delete(no) > 0) {
       out.println("게시글을 삭제했습니다.");
+
     } else {
-      out.println("게시글이 없습니다");
+      out.println("해당 번호의 게시글이 없습니다.");
     }
   }
 

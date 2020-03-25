@@ -4,34 +4,23 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import com.moonsolid.sc.dao.PhotoBoardDao;
-import com.moonsolid.sc.dao.PhotoFileDao;
-import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.PhotoFile;
 import com.moonsolid.sc.domain.Plan;
-import com.moonsolid.sql.PlatformTransactionManager;
-import com.moonsolid.sql.TransactionCallback;
-import com.moonsolid.sql.TransactionTemplate;
+import com.moonsolid.sc.service.PhotoBoardService;
+import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
 
-  TransactionTemplate transactionTemplate;
-  PhotoBoardDao photoBoardDao;
-  PlanDao planDao;
-  PhotoFileDao photoFileDao;
-
+  PhotoBoardService photoBoardService;
+  PlanService planService;
 
   public PhotoBoardAddServlet(//
-      PlatformTransactionManager txManager, //
-      PhotoBoardDao photoBoardDao, //
-      PlanDao planDao, //
-      PhotoFileDao photoFileDao) {
-    this.transactionTemplate = new TransactionTemplate(txManager);
-    this.photoBoardDao = photoBoardDao;
-    this.planDao = planDao;
-    this.photoFileDao = photoFileDao;
+      PhotoBoardService photoBoardService, //
+      PlanService planService) {
+    this.photoBoardService = photoBoardService;
+    this.planService = planService;
   }
 
   @Override
@@ -42,7 +31,7 @@ public class PhotoBoardAddServlet implements Servlet {
 
     int planNo = Prompt.getInt(in, out, "일정번호 : ");
 
-    Plan plan = planDao.findByNo(planNo);
+    Plan plan = planService.get(planNo);
     if (plan == null) {
       out.println("일정 번호가 유효하지 않습니다.");
     }
@@ -52,20 +41,8 @@ public class PhotoBoardAddServlet implements Servlet {
     List<PhotoFile> photoFiles = inputPhotoFiles(in, out);
     photoBoard.setFiles(photoFiles);
 
-
-    transactionTemplate.execute(new TransactionCallback() {
-      @Override
-      public Object doInTransaction() throws Exception {
-
-        if (photoBoardDao.insert(photoBoard) == 0) {
-          throw new Exception("사진 게시글 등록에 실패했습니다.");
-        }
-        photoFileDao.insert(photoBoard);
-        out.println("새 사진 게시글을 등록했습니다.");
-
-        return null;
-      }
-    });
+    photoBoardService.add(photoBoard);
+    out.println("새 사진 게시글을 등록했습니다.");
   }
 
   private List<PhotoFile> inputPhotoFiles(Scanner in, PrintStream out) {

@@ -2,23 +2,22 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.domain.Member;
+import com.moonsolid.sc.service.MemberService;
 import com.moonsolid.util.Prompt;
 
 public class MemberDetailServlet implements Servlet {
 
-  MemberDao memberDao;
+  MemberService memberService;
 
-  public MemberDetailServlet(MemberDao memberDao) {
-    this.memberDao = memberDao;
+  public MemberDetailServlet(MemberService memberService) {
+    this.memberService = memberService;
   }
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-
     int no = Prompt.getInt(in, out, "회원번호 : ");
-    Member member = memberDao.findByNo(no);
+    Member member = memberService.get(no);
 
     if (member != null) {
       out.printf("번호: %d\n", member.getNo());

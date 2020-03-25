@@ -2,16 +2,16 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.domain.Board;
+import com.moonsolid.sc.service.BoardService;
 import com.moonsolid.util.Prompt;
 
 public class BoardUpdateServlet implements Servlet {
 
-  BoardDao boardDao;
+  BoardService boardService;
 
-  public BoardUpdateServlet(BoardDao boardDao) {
-    this.boardDao = boardDao;
+  public BoardUpdateServlet(BoardService boardService) {
+    this.boardService = boardService;
   }
 
 
@@ -20,23 +20,23 @@ public class BoardUpdateServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "게시글 번호 : ");
 
-    Board old = boardDao.findByNo(no);
+    Board old = boardService.get(no);
     if (old == null) {
       out.println("해당 번호의 게시글이 없습니다.");
       return;
     }
 
-
     Board board = new Board();
 
-
-    board.setTitle(Prompt.getString(in, out, //
-        String.format("게시글 제목 : (기존 제목 : (%s))", //
-            old.getTitle()),
+    board.setTitle(Prompt.getString(//
+        in, //
+        out, //
+        String.format("제목 (기존 제목_%s): ", old.getTitle()), //
         old.getTitle()));
+
     board.setNo(no);
 
-    if (boardDao.update(board) > 0) {
+    if (boardService.update(board) > 0) {
       out.println("게시글을 변경했습니다.");
 
     } else {
