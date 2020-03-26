@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.moonsolid.sc.dao.PhotoBoardDao">
+
+  <resultMap type="PhotoBoard" id="PhotoBoardMap">
+    <id column="photo_id"   property="no"/>
+    <result column="titl"  property="title"/>
+    <result column="cdt"  property="createdDate"/>
+    <result column="vw_cnt"    property="viewCount"/>
+    
+    <association property="plan" javaType="Plan">
+      <id column="plan_id"   property="no"/>
+      <result column="plan_titl"  property="title"/>
+    </association>
+    
+    <collection property="files" ofType="PhotoFile">
+      <id column="photo_file_id"   property="no"/>
+      <result column="file_path"  property="filepath"/>
+    </collection>
+  </resultMap>
+    
+  <insert id="insert" parameterType="PhotoBoard"
+    useGeneratedKeys="true" keyColumn="photo_id" keyProperty="no">
+    insert into sc_photo(titl,plan_id) 
+    values(#{title}, #{plan.no})
+  </insert>
+  
+  <select id="findAllByPlanNo" resultMap="PhotoBoardMap" parameterType="int">
+    select 
+      photo_id, 
+      titl, 
+      cdt, 
+      vw_cnt
+    from sc_photo
+    where 
+      plan_id=#{no}
+    order by 
+      photo_id desc
+  </select>
+
+  <select id="findByNo" resultMap="PhotoBoardMap" parameterType="int">
+    select
+      p.photo_id,
+      p.titl,
+      p.cdt,
+      p.vw_cnt,
+      l.plan_id,
+      l.titl plan_titl,
+      f.photo_file_id,
+      f.file_path
+    from sc_photo p
+      inner join sc_plan l on p.plan_id=l.plan_id
+      left outer join sc_photo_file f on p.photo_id=f.photo_id
+    where 
+      p.photo_id=#{no}
+  </select>
+  
+  <update id="update" parameterType="PhotoBoard">
+    update sc_photo set
+      titl=#{title}
+    where photo_id=#{no}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+    delete from sc_photo
+    where photo_id=#{no}
+  </delete>
+</mapper>
+
+
+
+
+
+
+

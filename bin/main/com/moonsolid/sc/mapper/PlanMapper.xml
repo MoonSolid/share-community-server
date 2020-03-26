@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moonsolid.sc.dao.PlanDao">
+
+	<resultMap type="Plan" id="PlanMap">
+		<id column="plan_id" property="no" />
+		<result column="place" property="place" />
+		<result column="cont" property="description" />
+		<result column="memo" property="memo" />
+		<result column="cost" property="cost" />
+		<result column="titl" property="title" />
+	</resultMap>
+
+	<sql id="select1">
+		select
+		plan_id,
+		place,
+		cont,
+		memo,
+		cost,
+	</sql>
+
+
+	<insert id="insert" parameterType="Plan">
+		insert into sc_plan(
+		place,
+		cont,
+		memo,
+		cost,
+		titl)
+		values(
+		#{place},
+		#{description},
+		#{memo},
+		#{cost},
+		#{title})
+	</insert>
+
+	<select id="findAll" resultMap="PlanMap" parameterType="map">
+		<include refid="select1"/>
+		titl
+		from sc_plan
+		<where>
+			<if test="title != null">titl like concat('%', #{title}, '%')</if>
+			<if test="description != null">and cont like concat('%', #{description}, '%')</if>
+			<if test="place != null">and place like concat('%', #{place}, '%')</if>
+			<if test="memo != null">and memo like concat('%', #{memo}, '%')</if>
+			<if test="cost != null">and cost like concat('%', #{cost}, '%')</if>
+		</where>
+	</select>
+
+
+	<select id="selectDetail" resultMap="PlanMap"
+		parameterType="int">
+		<include refid="select1" />
+		titl
+		from
+		sc_plan
+		where
+		plan_id=#{no}
+	</select>
+
+	<update id="updatePlan" parameterType="Plan">
+		update sc_plan set
+		place=#{place},
+		cont=#{description},
+		memo=#{memo},
+		cost=#{cost},
+		titl=#{title}
+		where plan_id=#{no}
+	</update>
+
+	<delete id="deletePlan" parameterType="int">
+		delete from sc_plan
+		where plan_id=#{no}
+	</delete>
+</mapper>
+
+
+
+
+
+
+

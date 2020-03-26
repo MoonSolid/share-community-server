@@ -1,71 +1,62 @@
 package com.moonsolid.sc;
 
-import java.io.InputStream;
-import org.apache.ibatis.io.Resources;
+import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import com.moonsolid.sc.dao.BoardDao;
-import com.moonsolid.sc.dao.MemberDao;
-import com.moonsolid.sc.dao.PhotoBoardDao;
-import com.moonsolid.sc.dao.PhotoFileDao;
-import com.moonsolid.sc.dao.PlanDao;
-import com.moonsolid.sql.MybatisDaoFactory;
-import com.moonsolid.sql.PlatformTransactionManager;
-import com.moonsolid.sql.SqlSessionFactoryProxy;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
 
 @ComponentScan(value = "com.moonsolid.sc")
+
+@PropertySource("classpath:com/moonsolid/sc/conf/jdbc.properties")
+
+@MapperScan("com.moonsolid.sc.dao")
+
 public class AppConfig {
-  public AppConfig() throws Exception {
 
+  @Value("${jdbc.driver}")
+  String jdbcDriver;
+
+  @Value("${jdbc.url}")
+  String jdbcUrl;
+
+  @Value("${jdbc.username}")
+  String jdbcUsername;
+
+  @Value("${jdbc.password}")
+  String jdbcPassword;
+
+  @Bean
+  public DataSource dataSource() {
+    DriverManagerDataSource ds = new DriverManagerDataSource();
+    ds.setDriverClassName(jdbcDriver);
+    ds.setUrl(jdbcUrl);
+    ds.setUsername(jdbcUsername);
+    ds.setPassword(jdbcPassword);
+    return ds;
   }
 
   @Bean
-  public SqlSessionFactory sqlSessionFactory() throws Exception {
-    InputStream inputStream = Resources.getResourceAsStream(//
-        "com/moonsolid/sc/conf/mybatis-config.xml");
-
-    return new SqlSessionFactoryProxy(//
-        new SqlSessionFactoryBuilder().build(inputStream));
-  }
-
-  @Bean
-  public MybatisDaoFactory daoFactory(SqlSessionFactory sqlSessionFactory) {
-
-    return new MybatisDaoFactory(sqlSessionFactory);
+  public SqlSessionFactory sqlSessionFactory(DataSource dataSource, ApplicationContext appCtx)
+      throws Exception {
+    SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+    sqlSessionFactoryBean.setDataSource(dataSource);
+    sqlSessionFactoryBean.setTypeAliasesPackage("com.moonsolid.sc.domain");
+    sqlSessionFactoryBean.setMapperLocations(//
+        appCtx.getResources("classpath:com/moonsolid/sc/mapper/*Mapper.xml"));
+    return sqlSessionFactoryBean.getObject();
   }
 
   @Bean
   public PlatformTransactionManager TransactionManager(//
-
-      SqlSessionFactory sqlSessionFactory//
-  ) {
-    return new PlatformTransactionManager(sqlSessionFactory);
-  }
-
-  @Bean
-  public BoardDao BoardDao(MybatisDaoFactory daoFactory) {
-    return daoFactory.createDao(BoardDao.class);
-  }
-
-  @Bean
-  public PlanDao PlanDao(MybatisDaoFactory daoFactory) {
-    return daoFactory.createDao(PlanDao.class);
-  }
-
-  @Bean
-  public MemberDao MemberDao(MybatisDaoFactory daoFactory) {
-    return daoFactory.createDao(MemberDao.class);
-  }
-
-  @Bean
-  public PhotoBoardDao PhotoBoardDao(MybatisDaoFactory daoFactory) {
-    return daoFactory.createDao(PhotoBoardDao.class);
-  }
-
-  @Bean
-  public PhotoFileDao PhotoFileDao(MybatisDaoFactory daoFactory) {
-    return daoFactory.createDao(PhotoFileDao.class);
+      DataSource dataSource) {
+    return new DataSourceTransactionManager(dataSource);
   }
 }
