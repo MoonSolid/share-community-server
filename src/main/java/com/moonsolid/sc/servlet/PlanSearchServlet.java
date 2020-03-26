@@ -4,9 +4,9 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
-import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 import com.moonsolid.util.RequestMapping;
 

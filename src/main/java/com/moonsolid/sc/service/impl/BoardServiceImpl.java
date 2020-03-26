@@ -1,10 +1,10 @@
 package com.moonsolid.sc.service.impl;
 
 import java.util.List;
+import org.springframework.stereotype.Component;
 import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.domain.Board;
 import com.moonsolid.sc.service.BoardService;
-import com.moonsolid.util.Component;
 
 @Component
 public class BoardServiceImpl implements BoardService {

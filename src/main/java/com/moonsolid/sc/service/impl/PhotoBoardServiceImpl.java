@@ -1,6 +1,7 @@
 package com.moonsolid.sc.service.impl;
 
 import java.util.List;
+import org.springframework.stereotype.Component;
 import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.domain.PhotoBoard;
@@ -8,7 +9,6 @@ import com.moonsolid.sc.service.PhotoBoardService;
 import com.moonsolid.sql.PlatformTransactionManager;
 import com.moonsolid.sql.TransactionCallback;
 import com.moonsolid.sql.TransactionTemplate;
-import com.moonsolid.util.Component;
 
 @Component
 public class PhotoBoardServiceImpl implements PhotoBoardService {

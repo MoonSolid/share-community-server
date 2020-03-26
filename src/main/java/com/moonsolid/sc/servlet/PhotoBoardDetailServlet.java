@@ -2,15 +2,15 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.PhotoFile;
 import com.moonsolid.sc.service.PhotoBoardService;
-import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 import com.moonsolid.util.RequestMapping;
 
 @Component
-public class PhotoBoardDetailServlet implements Servlet {
+public class PhotoBoardDetailServlet {
 
   PhotoBoardService photoBoardService;
 

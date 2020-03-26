@@ -21,6 +21,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11/"/>
+	<classpathentry sourcepath="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/5.2.4.RELEASE/439776de85c4c0752482e5c5cc98910682f087d7/spring-context-5.2.4.RELEASE-sources.jar" kind="lib" path="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/5.2.4.RELEASE/acb068439d37a42006abad2b63511dd4491d80f5/spring-context-5.2.4.RELEASE.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry sourcepath="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.mariadb.jdbc/mariadb-java-client/2.5.4/ca0f54e7fc19fd604aa9110b357dae710549443f/mariadb-java-client-2.5.4-sources.jar" kind="lib" path="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.mariadb.jdbc/mariadb-java-client/2.5.4/adb3dbc97684a254b9ecf488167bbf177a33d8ba/mariadb-java-client-2.5.4.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
@@ -37,6 +42,26 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="C:/Users/user/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/28.0-jre/2d1dca555245ef4bacb35f25299f323d8dd10b27/guava-28.0-jre-sources.jar" kind="lib" path="C:/Users/user/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/28.0-jre/54fed371b4b8a8cce1e94a9abd9620982d3aa54b/guava-28.0-jre.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aop/5.2.4.RELEASE/6cfd7dd8e9ca811603ad9dce18562bba557cd24a/spring-aop-5.2.4.RELEASE-sources.jar" kind="lib" path="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aop/5.2.4.RELEASE/9ed5335191b9bc8422ec44a90e34d00ee6d737be/spring-aop-5.2.4.RELEASE.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/5.2.4.RELEASE/2dd7c316a6ac754d90d6e6e5fc7cc11766571beb/spring-beans-5.2.4.RELEASE-sources.jar" kind="lib" path="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/5.2.4.RELEASE/fc5b50a647f319f9ca6ab272177f6d8188bfdfe5/spring-beans-5.2.4.RELEASE.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-expression/5.2.4.RELEASE/5bbe288517c153d528508c4e97a1337266c228c1/spring-expression-5.2.4.RELEASE-sources.jar" kind="lib" path="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-expression/5.2.4.RELEASE/e657cca52e09ec92c5f5f78cc45591e570fda0a/spring-expression-5.2.4.RELEASE.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/5.2.4.RELEASE/6026dc4811c3cb0caed128707329ece586dc237a/spring-core-5.2.4.RELEASE-sources.jar" kind="lib" path="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/5.2.4.RELEASE/155344a8b1a5e98c03c0a102b2aa008d2178f7a1/spring-core-5.2.4.RELEASE.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -72,6 +97,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.codehaus.mojo/animal-sniffer-annotations/1.17/8fb5b5ad9c9723951b9fccaba5bb657fa6064868/animal-sniffer-annotations-1.17-sources.jar" kind="lib" path="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.codehaus.mojo/animal-sniffer-annotations/1.17/f97ce6decaea32b36101e37979f8b647f00681fb/animal-sniffer-annotations-1.17.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-jcl/5.2.4.RELEASE/58ab6d327048148d5cf6f259c77b3116dcdaa1c3/spring-jcl-5.2.4.RELEASE-sources.jar" kind="lib" path="C:/Users/user/.gradle/caches/modules-2/files-2.1/org.springframework/spring-jcl/5.2.4.RELEASE/a516f6c15db9024ae64ad8aed76232aa3f875f9f/spring-jcl-5.2.4.RELEASE.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>

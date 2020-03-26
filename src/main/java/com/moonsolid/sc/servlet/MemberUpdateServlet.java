@@ -2,14 +2,14 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import com.moonsolid.sc.domain.Member;
 import com.moonsolid.sc.service.MemberService;
-import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 import com.moonsolid.util.RequestMapping;
 
 @Component
-public class MemberUpdateServlet implements Servlet {
+public class MemberUpdateServlet {
 
   MemberService memberService;
 

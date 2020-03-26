@@ -3,13 +3,13 @@ package com.moonsolid.sc.servlet;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import com.moonsolid.sc.domain.Member;
 import com.moonsolid.sc.service.MemberService;
-import com.moonsolid.util.Component;
 import com.moonsolid.util.RequestMapping;
 
 @Component
-public class MemberListServlet implements Servlet {
+public class MemberListServlet {
 
   MemberService memberService;
 

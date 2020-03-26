@@ -2,10 +2,10 @@ package com.moonsolid.sc.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import org.springframework.stereotype.Component;
 import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.domain.Member;
 import com.moonsolid.sc.service.MemberService;
-import com.moonsolid.util.Component;
 
 @Component
 public class MemberServiceImpl implements MemberService {

@@ -12,9 +12,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.context.ApplicationContext;
 import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.sql.SqlSessionFactoryProxy;
-import com.moonsolid.util.ApplicationContext;
 import com.moonsolid.util.RequestHandler;
 import com.moonsolid.util.RequestMappingHandlerMapping;
 

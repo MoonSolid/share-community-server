@@ -2,10 +2,10 @@ package com.moonsolid.sc.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import org.springframework.stereotype.Component;
 import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
-import com.moonsolid.util.Component;
 
 @Component
 public class PlanServiceImpl implements PlanService {
