@@ -1,6 +1,7 @@
 package com.moonsolid.sc;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -11,20 +12,19 @@ import com.moonsolid.sc.dao.MemberDao;
 import com.moonsolid.sc.dao.PhotoBoardDao;
 import com.moonsolid.sc.dao.PhotoFileDao;
 import com.moonsolid.sc.dao.PlanDao;
-import com.moonsolid.sc.service.impl.BoardServiceImpl2;
-import com.moonsolid.sc.service.impl.MemberServiceImpl;
-import com.moonsolid.sc.service.impl.PhotoBoardServiceImpl;
-import com.moonsolid.sc.service.impl.PlanServiceImpl;
 import com.moonsolid.sql.MybatisDaoFactory;
 import com.moonsolid.sql.PlatformTransactionManager;
 import com.moonsolid.sql.SqlSessionFactoryProxy;
+import com.moonsolid.util.ApplicationContext;
 
-public class DataLoaderListener implements ApplicationContextListener {
+public class ContextLoaderListener implements ApplicationContextListener {
 
   @Override
   public void contextInitialized(Map<String, Object> context) {
 
     try {
+      HashMap<String, Object> beans = new HashMap<>();
+
       InputStream inputStream = Resources.getResourceAsStream(//
           "com/moonsolid/sc/conf/mybatis-config.xml");
 
@@ -34,20 +34,20 @@ public class DataLoaderListener implements ApplicationContextListener {
 
       MybatisDaoFactory daoFactory = new MybatisDaoFactory(sqlSessionFactory);
 
-      BoardDao boardDao = daoFactory.createDao(BoardDao.class);
-      PlanDao planDao = daoFactory.createDao(PlanDao.class);
-      MemberDao memberDao = daoFactory.createDao(MemberDao.class);
-      PhotoBoardDao photoBoardDao = daoFactory.createDao(PhotoBoardDao.class);
-      PhotoFileDao photoFileDao = daoFactory.createDao(PhotoFileDao.class);
+      beans.put("boardDao", daoFactory.createDao(BoardDao.class));
+      beans.put("planDao", daoFactory.createDao(PlanDao.class));
+      beans.put("memberDao", daoFactory.createDao(MemberDao.class));
+      beans.put("photoBoardDao", daoFactory.createDao(PhotoBoardDao.class));
+      beans.put("photoFileDao", daoFactory.createDao(PhotoFileDao.class));
 
       PlatformTransactionManager txManager = //
           new PlatformTransactionManager(sqlSessionFactory);
+      beans.put("transactionManager", txManager);
 
-      context.put("planService", new PlanServiceImpl(planDao));
-      context.put("photoBoardService", //
-          new PhotoBoardServiceImpl(txManager, photoBoardDao, photoFileDao));
-      context.put("boardService", new BoardServiceImpl2(sqlSessionFactory));
-      context.put("memberService", new MemberServiceImpl(memberDao));
+      ApplicationContext appCtx = new ApplicationContext(//
+          "com.moonsolid.sc", beans);
+      appCtx.printBeans();
+      context.put("iocContainer", appCtx);
 
     } catch (Exception e) {
       e.printStackTrace();

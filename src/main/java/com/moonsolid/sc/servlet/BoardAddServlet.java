@@ -4,10 +4,12 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.domain.Board;
 import com.moonsolid.sc.service.BoardService;
+import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 
 public class BoardAddServlet implements Servlet {
 
+  @Component("/board/add")
   BoardService boardService;
 
   public BoardAddServlet(BoardService boardService) {

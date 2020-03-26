@@ -5,7 +5,9 @@ import java.util.List;
 import com.moonsolid.sc.dao.PlanDao;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
+import com.moonsolid.util.Component;
 
+@Component
 public class PlanServiceImpl implements PlanService {
   PlanDao planDao;
 

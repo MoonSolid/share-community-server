@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Scanner;
 import com.moonsolid.sc.domain.Member;
 import com.moonsolid.sc.service.MemberService;
+import com.moonsolid.util.Component;
 
+@Component("/member/list")
 public class MemberListServlet implements Servlet {
 
   MemberService memberService;

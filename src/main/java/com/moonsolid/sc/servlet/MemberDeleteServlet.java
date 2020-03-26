@@ -3,8 +3,10 @@ package com.moonsolid.sc.servlet;
 import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.service.MemberService;
+import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 
+@Component("/member/delete")
 public class MemberDeleteServlet implements Servlet {
 
   MemberService memberService;

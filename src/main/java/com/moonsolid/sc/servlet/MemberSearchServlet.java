@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Scanner;
 import com.moonsolid.sc.domain.Member;
 import com.moonsolid.sc.service.MemberService;
+import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 
+@Component("/member/search")
 public class MemberSearchServlet implements Servlet {
 
   MemberService memberService;

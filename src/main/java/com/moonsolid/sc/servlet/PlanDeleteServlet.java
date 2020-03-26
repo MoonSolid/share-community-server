@@ -3,8 +3,10 @@ package com.moonsolid.sc.servlet;
 import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.service.PlanService;
+import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 
+@Component("/plan/delete")
 public class PlanDeleteServlet implements Servlet {
 
   PlanService planService;

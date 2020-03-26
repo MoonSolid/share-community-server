@@ -3,8 +3,10 @@ package com.moonsolid.sc.servlet;
 import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.service.PhotoBoardService;
+import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 
+@Component("/photoboard/delete")
 public class PhotoBoardDeleteServlet implements Servlet {
 
   PhotoBoardService photoBoardService;

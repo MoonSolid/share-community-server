@@ -7,8 +7,10 @@ import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PhotoBoardService;
 import com.moonsolid.sc.service.PlanService;
+import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 
+@Component("/photoboard/list")
 public class PhotoBoardListServlet implements Servlet {
 
   PhotoBoardService photoBoardService;

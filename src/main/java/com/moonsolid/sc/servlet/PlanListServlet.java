@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Scanner;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
+import com.moonsolid.util.Component;
 
+@Component("/plan/list")
 public class PlanListServlet implements Servlet {
 
   PlanService planService;

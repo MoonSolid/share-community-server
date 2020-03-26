@@ -4,8 +4,10 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.domain.Member;
 import com.moonsolid.sc.service.MemberService;
+import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 
+@Component("/member/update")
 public class MemberUpdateServlet implements Servlet {
 
   MemberService memberService;

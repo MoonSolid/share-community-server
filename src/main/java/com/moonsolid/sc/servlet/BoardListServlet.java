@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Scanner;
 import com.moonsolid.sc.domain.Board;
 import com.moonsolid.sc.service.BoardService;
+import com.moonsolid.util.Component;
 
+@Component("/board/list")
 public class BoardListServlet implements Servlet {
 
   BoardService boardService;

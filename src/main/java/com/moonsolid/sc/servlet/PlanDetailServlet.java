@@ -4,8 +4,10 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
+import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 
+@Component("/plan/detail")
 public class PlanDetailServlet implements Servlet {
 
   PlanService planService;

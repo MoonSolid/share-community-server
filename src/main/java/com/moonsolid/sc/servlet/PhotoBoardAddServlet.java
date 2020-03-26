@@ -9,8 +9,10 @@ import com.moonsolid.sc.domain.PhotoFile;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PhotoBoardService;
 import com.moonsolid.sc.service.PlanService;
+import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
 
+@Component("/photoboard/add")
 public class PhotoBoardAddServlet implements Servlet {
 
   PhotoBoardService photoBoardService;

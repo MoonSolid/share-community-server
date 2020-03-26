@@ -8,7 +8,9 @@ import com.moonsolid.sc.service.PhotoBoardService;
 import com.moonsolid.sql.PlatformTransactionManager;
 import com.moonsolid.sql.TransactionCallback;
 import com.moonsolid.sql.TransactionTemplate;
+import com.moonsolid.util.Component;
 
+@Component
 public class PhotoBoardServiceImpl implements PhotoBoardService {
   TransactionTemplate transactionTemplate;
   PhotoBoardDao photoBoardDao;

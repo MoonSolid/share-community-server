@@ -4,7 +4,9 @@ import java.util.List;
 import com.moonsolid.sc.dao.BoardDao;
 import com.moonsolid.sc.domain.Board;
 import com.moonsolid.sc.service.BoardService;
+import com.moonsolid.util.Component;
 
+@Component
 public class BoardServiceImpl implements BoardService {
   BoardDao boardDao;
 
