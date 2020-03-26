@@ -6,9 +6,10 @@ import com.moonsolid.sc.domain.Board;
 import com.moonsolid.sc.service.BoardService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/board/update")
-public class BoardUpdateServlet implements Servlet {
+@Component
+public class BoardUpdateServlet {
 
   BoardService boardService;
 
@@ -17,7 +18,7 @@ public class BoardUpdateServlet implements Servlet {
   }
 
 
-  @Override
+  @RequestMapping("/board/update")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "게시글 번호 : ");

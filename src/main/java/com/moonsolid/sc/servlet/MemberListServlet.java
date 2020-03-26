@@ -6,8 +6,9 @@ import java.util.Scanner;
 import com.moonsolid.sc.domain.Member;
 import com.moonsolid.sc.service.MemberService;
 import com.moonsolid.util.Component;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/member/list")
+@Component
 public class MemberListServlet implements Servlet {
 
   MemberService memberService;
@@ -17,7 +18,7 @@ public class MemberListServlet implements Servlet {
   }
 
 
-  @Override
+  @RequestMapping("/member/list")
   public void service(Scanner in, PrintStream out) throws Exception {
     List<Member> members = memberService.list();
     for (Member m : members) {

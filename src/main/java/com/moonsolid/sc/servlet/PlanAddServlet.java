@@ -6,9 +6,10 @@ import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/plan/add")
-public class PlanAddServlet implements Servlet {
+@Component
+public class PlanAddServlet {
 
   PlanService planService;
 
@@ -16,7 +17,7 @@ public class PlanAddServlet implements Servlet {
     this.planService = planService;
   }
 
-  @Override
+  @RequestMapping("/plan/add")
   public void service(Scanner in, PrintStream out) throws Exception {
     Plan plan = new Plan();
 

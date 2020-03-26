@@ -8,9 +8,10 @@ import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/plan/search")
-public class PlanSearchServlet implements Servlet {
+@Component
+public class PlanSearchServlet {
 
   PlanService planService;
 
@@ -18,7 +19,7 @@ public class PlanSearchServlet implements Servlet {
     this.planService = planService;
   }
 
-  @Override
+  @RequestMapping("/plan/search")
   public void service(Scanner in, PrintStream out) throws Exception {
     HashMap<String, Object> params = new HashMap<>();
     String keyword = Prompt.getString(in, out, "일정명 검색: ");

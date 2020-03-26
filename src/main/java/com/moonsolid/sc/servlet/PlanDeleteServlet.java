@@ -5,9 +5,10 @@ import java.util.Scanner;
 import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/plan/delete")
-public class PlanDeleteServlet implements Servlet {
+@Component
+public class PlanDeleteServlet {
 
   PlanService planService;
 
@@ -17,7 +18,7 @@ public class PlanDeleteServlet implements Servlet {
 
 
 
-  @Override
+  @RequestMapping("/plan/delete")
   public void service(Scanner in, PrintStream out) throws Exception {
     int no = Prompt.getInt(in, out, "일정 번호 : ");
 

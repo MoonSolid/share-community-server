@@ -6,9 +6,10 @@ import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/plan/detail")
-public class PlanDetailServlet implements Servlet {
+@Component
+public class PlanDetailServlet {
 
   PlanService planService;
 
@@ -18,7 +19,7 @@ public class PlanDetailServlet implements Servlet {
 
 
 
-  @Override
+  @RequestMapping("/plan/detail")
   public void service(Scanner in, PrintStream out) throws Exception {
     int no = Prompt.getInt(in, out, "일정 번호 : ");
 

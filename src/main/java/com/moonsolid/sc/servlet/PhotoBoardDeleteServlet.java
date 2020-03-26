@@ -5,8 +5,9 @@ import java.util.Scanner;
 import com.moonsolid.sc.service.PhotoBoardService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/photoboard/delete")
+@Component
 public class PhotoBoardDeleteServlet implements Servlet {
 
   PhotoBoardService photoBoardService;
@@ -15,7 +16,7 @@ public class PhotoBoardDeleteServlet implements Servlet {
     this.photoBoardService = photoBoardService;
   }
 
-  @Override
+  @RequestMapping("/photoboard/delete")
   public void service(Scanner in, PrintStream out) throws Exception {
     int no = Prompt.getInt(in, out, "번호? ");
     photoBoardService.delete(no);

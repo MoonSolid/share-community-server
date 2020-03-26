@@ -7,8 +7,9 @@ import com.moonsolid.sc.domain.PhotoFile;
 import com.moonsolid.sc.service.PhotoBoardService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/photoboard/detail")
+@Component
 public class PhotoBoardDetailServlet implements Servlet {
 
   PhotoBoardService photoBoardService;
@@ -18,7 +19,7 @@ public class PhotoBoardDetailServlet implements Servlet {
     this.photoBoardService = photoBoardService;
   }
 
-  @Override
+  @RequestMapping("/photoboard/detail")
   public void service(Scanner in, PrintStream out) throws Exception {
     int no = Prompt.getInt(in, out, "사진 게시글번호? ");
 

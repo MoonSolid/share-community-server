@@ -9,8 +9,9 @@ import com.moonsolid.sc.service.PhotoBoardService;
 import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/photoboard/list")
+@Component
 public class PhotoBoardListServlet implements Servlet {
 
   PhotoBoardService photoBoardService;
@@ -24,7 +25,7 @@ public class PhotoBoardListServlet implements Servlet {
   }
 
 
-  @Override
+  @RequestMapping("/photoboard/list")
   public void service(Scanner in, PrintStream out) throws Exception {
     int planNo = Prompt.getInt(in, out, "일정번호 : ");
 

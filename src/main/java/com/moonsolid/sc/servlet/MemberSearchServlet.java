@@ -7,8 +7,9 @@ import com.moonsolid.sc.domain.Member;
 import com.moonsolid.sc.service.MemberService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/member/search")
+@Component
 public class MemberSearchServlet implements Servlet {
 
   MemberService memberService;
@@ -17,7 +18,7 @@ public class MemberSearchServlet implements Servlet {
     this.memberService = memberService;
   }
 
-  @Override
+  @RequestMapping("/member/search")
   public void service(Scanner in, PrintStream out) throws Exception {
     String keyword = Prompt.getString(in, out, "검색어 : ");
 

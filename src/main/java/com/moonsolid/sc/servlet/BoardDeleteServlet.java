@@ -5,9 +5,10 @@ import java.util.Scanner;
 import com.moonsolid.sc.service.BoardService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/board/delete")
-public class BoardDeleteServlet implements Servlet {
+@Component
+public class BoardDeleteServlet {
 
   BoardService boardService;
 
@@ -16,7 +17,7 @@ public class BoardDeleteServlet implements Servlet {
   }
 
 
-  @Override
+  @RequestMapping("/board/delete")
   public void service(Scanner in, PrintStream out) throws Exception {
     int no = Prompt.getInt(in, out, "게시글 번호 : ");
 

@@ -6,9 +6,10 @@ import java.util.Scanner;
 import com.moonsolid.sc.domain.Board;
 import com.moonsolid.sc.service.BoardService;
 import com.moonsolid.util.Component;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/board/list")
-public class BoardListServlet implements Servlet {
+@Component
+public class BoardListServlet {
 
   BoardService boardService;
 
@@ -16,7 +17,7 @@ public class BoardListServlet implements Servlet {
     this.boardService = boardService;
   }
 
-  @Override
+  @RequestMapping("/board/list")
   public void service(Scanner in, PrintStream out) throws Exception {
     List<Board> boards = boardService.list();
     for (Board board : boards) {

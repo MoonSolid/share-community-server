@@ -6,9 +6,10 @@ import java.util.Scanner;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Component;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/plan/list")
-public class PlanListServlet implements Servlet {
+@Component
+public class PlanListServlet {
 
   PlanService planService;
 
@@ -16,7 +17,7 @@ public class PlanListServlet implements Servlet {
     this.planService = planService;
   }
 
-  @Override
+  @RequestMapping("/plan/list")
   public void service(Scanner in, PrintStream out) throws Exception {
     List<Plan> plans = planService.list();
     for (Plan plan : plans) {

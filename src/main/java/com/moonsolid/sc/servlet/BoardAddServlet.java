@@ -6,17 +6,18 @@ import com.moonsolid.sc.domain.Board;
 import com.moonsolid.sc.service.BoardService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-public class BoardAddServlet implements Servlet {
+@Component
+public class BoardAddServlet {
 
-  @Component("/board/add")
   BoardService boardService;
 
   public BoardAddServlet(BoardService boardService) {
     this.boardService = boardService;
   }
 
-  @Override
+  @RequestMapping("/board/add")
   public void service(Scanner in, PrintStream out) throws Exception {
     Board board = new Board();
     board.setTitle(Prompt.getString(in, out, "게시글 제목 : "));

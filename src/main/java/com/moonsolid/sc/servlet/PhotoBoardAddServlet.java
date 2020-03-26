@@ -11,9 +11,10 @@ import com.moonsolid.sc.service.PhotoBoardService;
 import com.moonsolid.sc.service.PlanService;
 import com.moonsolid.util.Component;
 import com.moonsolid.util.Prompt;
+import com.moonsolid.util.RequestMapping;
 
-@Component("/photoboard/add")
-public class PhotoBoardAddServlet implements Servlet {
+@Component
+public class PhotoBoardAddServlet {
 
   PhotoBoardService photoBoardService;
   PlanService planService;
@@ -25,7 +26,7 @@ public class PhotoBoardAddServlet implements Servlet {
     this.planService = planService;
   }
 
-  @Override
+  @RequestMapping("/photoboard/add")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     PhotoBoard photoBoard = new PhotoBoard();
