@@ -37,6 +37,7 @@ public class PhotoBoardAddServlet {
     Plan plan = planService.get(planNo);
     if (plan == null) {
       out.println("일정 번호가 유효하지 않습니다.");
+      return;
     }
 
     photoBoard.setPlan(plan);

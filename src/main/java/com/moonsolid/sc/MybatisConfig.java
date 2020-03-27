@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 
 @MapperScan("com.moonsolid.sc.dao")
-
 public class MybatisConfig {
 
   public MybatisConfig() {
