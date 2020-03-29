@@ -51,6 +51,16 @@
 			<if test="cost != null">and cost like concat('%', #{cost}, '%')</if>
 		</where>
 	</select>
+	
+	
+	<select id="findByNo" resultMap="PlanMap" parameterType="int">
+	<include refid="select1"/>
+	titl
+	from 
+	sc_plan
+	where
+	plan_id=#{no}	
+	</select>
 
 
 	<select id="selectDetail" resultMap="PlanMap"
