@@ -110,15 +110,27 @@ public class ServerApp {
         Scanner in = new Scanner(socket.getInputStream());
         PrintStream out = new PrintStream(socket.getOutputStream())) {
 
-      String request = in.nextLine();
-      logger.info(String.format("요청 명령 => %s\n", request));
+      String[] requestLine = in.nextLine().split(" ");
+      while (true) {
+        String line = in.nextLine();
+        if (line.length() == 0) {
+          break;
+        }
+      }
 
-      if (request.equalsIgnoreCase("/server/stop")) {
+      String method = requestLine[0];
+      String requestUri = requestLine[1];
+      logger.info(String.format("method => %s", method));
+      logger.info(String.format("request-uri => %s", requestUri));
+
+      printResponseHeader(out);
+
+      if (requestUri.equalsIgnoreCase("/server/stop")) {
         quit(out);
         return;
       }
 
-      RequestHandler requestHandler = handlerMapper.getHandler(request);
+      RequestHandler requestHandler = handlerMapper.getHandler(requestUri);
 
       if (requestHandler != null) {
         try {
@@ -163,6 +175,12 @@ public class ServerApp {
     out.println("OK");
     out.println("!end!");
     out.flush();
+  }
+
+  private void printResponseHeader(PrintStream out) {
+    out.println("HTTP/1.1 200 OK");
+    out.println("Server: moonsolidServer");
+    out.println();
   }
 
   public static void main(String[] args) {
