@@ -1,6 +1,6 @@
 package com.moonsolid.sc.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ public class PlanSearchServlet {
   }
 
   @RequestMapping("/plan/search")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
     HashMap<String, Object> map = new HashMap<>();
     String value;
 

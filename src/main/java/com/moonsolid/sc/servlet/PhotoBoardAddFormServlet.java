@@ -1,6 +1,6 @@
 package com.moonsolid.sc.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import com.moonsolid.sc.domain.Plan;
@@ -17,7 +17,7 @@ public class PhotoBoardAddFormServlet {
   }
 
   @RequestMapping("/photoboard/addForm")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
     int planNo = Integer.parseInt(params.get("planNo"));
     Plan plan = planService.get(planNo);
 

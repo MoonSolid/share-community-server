@@ -1,19 +1,32 @@
 package com.moonsolid.sc;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ConnectionClosedException;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.ExceptionListener;
+import org.apache.hc.core5.http.HttpConnection;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.impl.bootstrap.HttpServer;
+import org.apache.hc.core5.http.impl.bootstrap.ServerBootstrap;
+import org.apache.hc.core5.http.io.HttpRequestHandler;
+import org.apache.hc.core5.http.io.SocketConfig;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.io.CloseMode;
+import org.apache.hc.core5.util.TimeValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -21,16 +34,12 @@ import com.moonsolid.sc.context.ApplicationContextListener;
 import com.moonsolid.util.RequestHandler;
 import com.moonsolid.util.RequestMappingHandlerMapping;
 
-public class ServerApp {
+public class ServerApp implements ExceptionListener, HttpRequestHandler {
 
   static Logger logger = LogManager.getLogger(ServerApp.class);
 
   Set<ApplicationContextListener> listeners = new HashSet<>();
   Map<String, Object> context = new HashMap<>();
-
-  ExecutorService executorService = Executors.newCachedThreadPool();
-
-  boolean serverStop = false;
 
   ApplicationContext iocContainer;
 
@@ -56,120 +65,42 @@ public class ServerApp {
     }
   }
 
-  public void service() {
-
+  public void service() throws Exception {
     notifyApplicationInitialized();
     iocContainer = (ApplicationContext) context.get("iocContainer");
 
     handlerMapper = //
         (RequestMappingHandlerMapping) context.get("handlerMapper");
 
-    try (ServerSocket serverSocket = new ServerSocket(9999)) {
+    SocketConfig socketConfig = SocketConfig.custom() //
+        .setSoTimeout(15, TimeUnit.SECONDS)//
+        .setTcpNoDelay(true) //
+        .build();
 
-      logger.info("클라이언트 연결 대기중...");
+    HttpServer server = ServerBootstrap.bootstrap()//
+        .setListenerPort(9999) //
+        .setSocketConfig(socketConfig) //
+        .setSslContext(null) //
+        .setExceptionListener(this) //
+        .register("*", this) //
+        .create(); //
 
-      while (true) {
-        Socket socket = serverSocket.accept();
-        logger.info("클라이언트와 연결되었습니다.");
+    server.start();
 
-        executorService.submit(() -> {
-          processRequest(socket);
-          logger.info("--------------------------------------");
-        });
-
-        if (serverStop) {
-          break;
-        }
-
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
+      public void run() {
+        notifyApplicationDestroyed();
+        logger.info("서버 종료");
+        server.close(CloseMode.GRACEFUL);
       }
-    } catch (Exception e) {
-      logger.error(String.format("서버 준비 중 오류 발생 : %s", e.getMessage()));
-    }
+    });
 
-    executorService.shutdown();
-
-    while (true) {
-      if (executorService.isTerminated()) {
-        break;
-      }
-      try {
-        Thread.sleep(500);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-
-    notifyApplicationDestroyed();
-
-    logger.info("서버 종료");
+    logger.info("서버 시작");
+    server.awaitTermination(TimeValue.MAX_VALUE);
   }
 
-  void processRequest(Socket clientSocket) {
-
-    try (Socket socket = clientSocket;
-        Scanner in = new Scanner(socket.getInputStream());
-        PrintStream out = new PrintStream(socket.getOutputStream())) {
-
-      String[] requestLine = in.nextLine().split(" ");
-      while (true) {
-        String line = in.nextLine();
-        if (line.length() == 0) {
-          break;
-        }
-      }
-
-      String method = requestLine[0];
-      String requestUri = requestLine[1];
-      logger.info(String.format("method => %s", method));
-      logger.info(String.format("request-uri => %s", requestUri));
-
-      String servletPath = getServletPath(requestUri);
-      logger.debug(String.format("servlet path => %s", servletPath));
-
-      Map<String, String> params = getParameters(requestUri);
-
-      printResponseHeader(out);
-
-      if (requestUri.equalsIgnoreCase("/server/stop")) {
-        quit(out);
-        return;
-      }
-
-      RequestHandler requestHandler = handlerMapper.getHandler(servletPath);
-
-      if (requestHandler != null) {
-        try {
-          requestHandler.getMethod().invoke( //
-              requestHandler.getBean(), //
-              params, out);
-
-        } catch (Exception e) {
-          out.println("요청 처리 중 오류 발생!");
-          out.println(e.getMessage());
-
-          logger.info("클라이언트 요청 처리 중 오류 발생:");
-          logger.info(e.getMessage());
-          StringWriter strWriter = new StringWriter();
-          e.printStackTrace(new PrintWriter(strWriter));
-          logger.debug(strWriter.toString());
-        }
-      } else {
-        notFound(out);
-        logger.info("해당 명령을 지원하지 않습니다.");
-      }
-      out.flush();
-      logger.info("클라이언트에게 응답하였습니다.");
-
-    } catch (Exception e) {
-      logger.error(String.format("예외 발생: %s", e.getMessage()));
-      StringWriter strWriter = new StringWriter();
-      e.printStackTrace(new PrintWriter(strWriter));
-      logger.debug(strWriter.toString());
-    }
-  }
-
-
-  private void notFound(PrintStream out) throws IOException {
+  private void notFound(PrintWriter out) throws IOException {
     out.println("<!DOCTYPE html>");
     out.println("<html>");
     out.println("<head>");
@@ -183,17 +114,18 @@ public class ServerApp {
     out.println("</html>");
   }
 
-  private void quit(PrintStream out) throws IOException {
-    serverStop = true;
-    out.println("OK");
-    out.println("!end!");
-    out.flush();
-  }
-
-  private void printResponseHeader(PrintStream out) {
-    out.println("HTTP/1.1 200 OK");
-    out.println("Server: moonsolidServer");
-    out.println();
+  private void error(PrintWriter out, Exception ex) throws IOException {
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<title>실행 오류!</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>실행 오류!</h1>");
+    out.printf("<p>%s</p>\n", ex.getMessage());
+    out.println("</body>");
+    out.println("</html>");
   }
 
   private String getServletPath(String requestUri) {
@@ -222,7 +154,74 @@ public class ServerApp {
     return params;
   }
 
-  public static void main(String[] args) {
+  @Override
+  public void onError(final Exception ex) {
+    ex.printStackTrace();
+  }
+
+  @Override
+  public void onError(final HttpConnection conn, final Exception ex) {
+    if (ex instanceof SocketTimeoutException) {
+      System.err.println("Connection timed out");
+    } else if (ex instanceof ConnectionClosedException) {
+      System.err.println(ex.getMessage());
+    } else {
+      ex.printStackTrace();
+    }
+  }
+
+  @Override
+  public void handle( //
+      final ClassicHttpRequest request, //
+      final ClassicHttpResponse response, //
+      final HttpContext context //
+  ) throws HttpException, IOException {
+
+    logger.info("--------------------------------------");
+    logger.info("클라이언트의 요청이 들어옴");
+
+    StringWriter outBuffer = new StringWriter();
+    PrintWriter out = new PrintWriter(outBuffer);
+
+    String method = request.getMethod(); //
+    String requestUri = request.getPath(); //
+    logger.info("{} {}", method, requestUri);
+
+    try {
+      String servletPath = getServletPath(requestUri);
+      logger.debug(String.format("servlet path => %s", servletPath));
+
+      Map<String, String> params = getParameters(requestUri);
+      RequestHandler requestHandler = handlerMapper.getHandler(servletPath);
+
+      if (requestHandler != null) {
+        requestHandler.getMethod().invoke( //
+            requestHandler.getBean(), //
+            params, out);
+
+      } else {
+        notFound(out);
+        logger.info("해당 명령을 지원하지 않습니다.");
+      }
+    } catch (Exception e) {
+      error(out, e);
+
+      logger.info("클라이언트 요청 처리 중 오류 발생");
+      logger.info(e.getMessage());
+      StringWriter strWriter = new StringWriter();
+      e.printStackTrace(new PrintWriter(strWriter));
+      logger.debug(strWriter.toString());
+    }
+
+    response.setCode(HttpStatus.SC_OK); //
+    response.setEntity(new StringEntity(//
+        outBuffer.toString(), //
+        ContentType.create("text/html", Charset.forName("UTF-8"))));
+    logger.info("클라이언트에게 응답하였음!");
+  }
+
+
+  public static void main(String[] args) throws Exception {
     logger.info("서버 스케쥴 관리 시스템입니다.");
 
     ServerApp app = new ServerApp();

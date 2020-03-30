@@ -1,6 +1,6 @@
 package com.moonsolid.sc.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import com.moonsolid.sc.domain.Plan;
@@ -17,7 +17,7 @@ public class PlanUpdateServlet {
   }
 
   @RequestMapping("/plan/update")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
 
     Plan plan = new Plan();
     plan.setNo(Integer.parseInt(params.get("no")));

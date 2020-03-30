@@ -1,6 +1,6 @@
 package com.moonsolid.sc.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import com.moonsolid.sc.domain.Board;
@@ -17,7 +17,7 @@ public class BoardDetailServlet {
   }
 
   @RequestMapping("/board/detail")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
     int no = Integer.parseInt(params.get("no"));
     Board board = boardService.get(no);
 
