@@ -2,13 +2,12 @@ package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import com.moonsolid.sc.domain.PhotoBoard;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PhotoBoardService;
 import com.moonsolid.sc.service.PlanService;
-import com.moonsolid.util.Prompt;
 import com.moonsolid.util.RequestMapping;
 
 @Component
@@ -26,28 +25,53 @@ public class PhotoBoardListServlet {
 
 
   @RequestMapping("/photoboard/list")
-  public void service(Scanner in, PrintStream out) throws Exception {
-    int planNo = Prompt.getInt(in, out, "일정번호 : ");
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("  <meta charset='UTF-8'>");
+    out.println("  <title>일정 사진 목록</title>");
+    out.println("</head>");
+    out.println("<body>");
+    try {
+      int planNo = Integer.parseInt(params.get("planNo"));
+      Plan plan = planService.get(planNo);
+      if (plan == null) {
+        throw new Exception("일정 번호가 유효하지 않습니다.");
+      }
 
-    Plan plan = planService.get(planNo);
-    if (plan == null) {
-      out.println("일정 번호가 유효하지 않습니다.");
-      return;
+      out.printf("  <h1>일정 사진 - %s</h1>", plan.getTitle());
+      out.printf("  <a href='/photoboard/addForm?planNo=%d'>새 사진</a><br>\n", //
+          planNo);
+      out.println("  <table border='1'>");
+      out.println("  <tr>");
+      out.println("    <th>번호</th>");
+      out.println("    <th>제목</th>");
+      out.println("    <th>등록일</th>");
+      out.println("    <th>조회수</th>");
+      out.println("  </tr>");
+
+      List<PhotoBoard> photoBoards = photoBoardService.listPlanPhoto(planNo);
+      for (PhotoBoard photoBoard : photoBoards) {
+        out.printf("  <tr>"//
+            + "<td>%d</td> "//
+            + "<td><a href='/photoboard/detail?no=%d'>%s</a></td> "//
+            + "<td>%s</td> "//
+            + "<td>%d</td>"//
+            + "</tr>\n", //
+            photoBoard.getNo(), //
+            photoBoard.getNo(), //
+            photoBoard.getTitle(), //
+            photoBoard.getCreatedDate(), //
+            photoBoard.getViewCount() //
+        );
+      }
+      out.println("</table>");
+
+    } catch (Exception e) {
+      out.printf("<p>%s</p>\n", e.getMessage());
     }
-
-    out.printf("일정명: %s\n", plan.getTitle());
-    out.println("----------------------------------------------------------");
-
-    List<PhotoBoard> photoBoards = photoBoardService.listPlanPhoto(planNo);
-
-    for (PhotoBoard photoBoard : photoBoards) {
-      out.printf("%d, %s, %s, %d\n", //
-          photoBoard.getNo(), //
-          photoBoard.getTitle(), //
-          photoBoard.getCreatedDate(), //
-          photoBoard.getViewCount() //
-      );
-    }
+    out.println("</body>");
+    out.println("</html>");
   }
-
 }

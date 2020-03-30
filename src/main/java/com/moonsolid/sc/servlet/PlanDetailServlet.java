@@ -1,11 +1,10 @@
 package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
-import com.moonsolid.util.Prompt;
 import com.moonsolid.util.RequestMapping;
 
 @Component
@@ -20,20 +19,46 @@ public class PlanDetailServlet {
 
 
   @RequestMapping("/plan/detail")
-  public void service(Scanner in, PrintStream out) throws Exception {
-    int no = Prompt.getInt(in, out, "일정 번호 : ");
-
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
+    int no = Integer.parseInt(params.get("no"));
     Plan plan = planService.get(no);
 
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<title>일정 상세정보</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>일정 상세정보</h1>");
+
     if (plan != null) {
-      out.printf("일정번호: %d\n", plan.getNo());
-      out.printf("일정장소: %s\n", plan.getPlace());
-      out.printf("일정내용: %s\n", plan.getDescription());
-      out.printf("일정메모: %s\n", plan.getMemo());
-      out.printf("일정비용: %s\n", plan.getCost());
-      out.printf("일정명 : %s\n", plan.getTitle());
+      out.println("<form action='/plan/update'>");
+      out.printf("번호: <input name='no' readonly type='text' value='%d'><br>\n", //
+          plan.getNo());
+      out.printf("일정명: <input name='title' type='text' value='%s'><br>\n", //
+          plan.getTitle());
+      out.println("내용:<br>");
+      out.printf("<textarea name='description' rows='5' cols='60'>%s</textarea><br>\n", //
+          plan.getDescription());
+      out.printf("메모: <input name='memo' type='text' value='%s'><br>\n", //
+          plan.getMemo());
+      out.printf("비용: <input name='cost' type='text' value='%s'><br>\n", //
+          plan.getCost());
+      out.printf("일정 장소: <input name='place' type='text' value='%s'><br>\n", //
+          plan.getPlace());
+      out.println("<p>");
+      out.println("<button>변경</button>");
+      out.printf("<a href='/plan/delete?no=%d'>삭제</a>\n", //
+          plan.getNo());
+      out.printf("<a href='/photoboard/list?planNo=%d'>사진게시판</a>\n", //
+          plan.getNo());
+      out.println("</p>");
+      out.println("</form>");
     } else {
-      out.println("해당 번호의 일정 없습니다.");
+      out.println("<p>해당 번호의 일정이 없습니다.</p>");
     }
+    out.println("</body>");
+    out.println("</html>");
   }
 }

@@ -1,11 +1,10 @@
 package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import com.moonsolid.sc.domain.Plan;
 import com.moonsolid.sc.service.PlanService;
-import com.moonsolid.util.Prompt;
 import com.moonsolid.util.RequestMapping;
 
 @Component
@@ -18,36 +17,34 @@ public class PlanUpdateServlet {
   }
 
   @RequestMapping("/plan/update")
-  public void service(Scanner in, PrintStream out) throws Exception {
-
-    int no = Prompt.getInt(in, out, "일정 번호 : ");
-
-    Plan old = planService.get(no);
-    if (old == null) {
-      out.println("해당 번호의 일정이 없습니다.");
-      return;
-    }
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
 
     Plan plan = new Plan();
+    plan.setNo(Integer.parseInt(params.get("no")));
+    plan.setPlace(params.get("place"));
+    plan.setDescription(params.get("description"));
+    plan.setMemo(params.get("memo"));
+    plan.setCost(params.get("cost"));
+    plan.setTitle(params.get("title"));
 
-    plan.setNo(no);
-    plan.setPlace(Prompt.getString(in, out, //
-        String.format("일정 장소(기존 장소 : (%s))", old.getPlace())));
-    plan.setDescription(Prompt.getString(in, out, //
-        String.format("일정 내용(기존 내용 : (%s))", old.getDescription())));
-    plan.setMemo(Prompt.getString(in, out, //
-        String.format("일정 메모(기존 메모 : (%s))", old.getMemo())));
-    plan.setCost(Prompt.getString(in, out, //
-        String.format("일정 비용(기존 비용 : (%s))", old.getCost())));
-    plan.setTitle(Prompt.getString(in, out, //
-        String.format("일정 제목(기존 제목 : (%s))", old.getTitle())));
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<meta http-equiv='refresh' content='2;url=/plan/list'>");
+    out.println("<title>일정 변경</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>일정 변경 결과</h1>");
 
     if (planService.update(plan) > 0) {
-      out.println("일정을 변경했습니다.");
+      out.println("<p>일정을 변경했습니다.</p>");
 
     } else {
-      out.println("일정 변경에 실패했습니다.");
+      out.println("<p>일정 변경에 실패했습니다.</p>");
     }
+    out.println("</body>");
+    out.println("</html>");
   }
 
 }

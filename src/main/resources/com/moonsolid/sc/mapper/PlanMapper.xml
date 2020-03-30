@@ -39,7 +39,42 @@
 		#{title})
 	</insert>
 
+	
 	<select id="findAll" resultMap="PlanMap" parameterType="map">
+		<include refid="select1" />
+		titl
+		from
+		sc_plan
+	</select>
+	
+	<select id="findByNo" resultMap="PlanMap" parameterType="int">
+	<include refid="select1"/>
+	titl
+	from 
+	sc_plan
+	where
+	plan_id=#{no}	
+	</select>
+
+
+
+	<update id="update" parameterType="Plan">
+		update sc_plan set
+		place=#{place},
+		cont=#{description},
+		memo=#{memo},
+		cost=#{cost},
+		titl=#{title}
+		where plan_id=#{no}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from sc_plan
+		where plan_id=#{no}
+	</delete>
+		
+		
+	<select id="findByKeyword" resultMap="PlanMap" parameterType="map">
 		<include refid="select1"/>
 		titl
 		from sc_plan
@@ -53,40 +88,9 @@
 	</select>
 	
 	
-	<select id="findByNo" resultMap="PlanMap" parameterType="int">
-	<include refid="select1"/>
-	titl
-	from 
-	sc_plan
-	where
-	plan_id=#{no}	
-	</select>
-
-
-	<select id="selectDetail" resultMap="PlanMap"
-		parameterType="int">
-		<include refid="select1" />
-		titl
-		from
-		sc_plan
-		where
-		plan_id=#{no}
-	</select>
-
-	<update id="updatePlan" parameterType="Plan">
-		update sc_plan set
-		place=#{place},
-		cont=#{description},
-		memo=#{memo},
-		cost=#{cost},
-		titl=#{title}
-		where plan_id=#{no}
-	</update>
-
-	<delete id="deletePlan" parameterType="int">
-		delete from sc_plan
-		where plan_id=#{no}
-	</delete>
+	
+	
+	
 </mapper>
 
 

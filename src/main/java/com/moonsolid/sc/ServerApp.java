@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -73,7 +74,6 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-
           logger.info("--------------------------------------");
         });
 
@@ -123,6 +123,11 @@ public class ServerApp {
       logger.info(String.format("method => %s", method));
       logger.info(String.format("request-uri => %s", requestUri));
 
+      String servletPath = getServletPath(requestUri);
+      logger.debug(String.format("servlet path => %s", servletPath));
+
+      Map<String, String> params = getParameters(requestUri);
+
       printResponseHeader(out);
 
       if (requestUri.equalsIgnoreCase("/server/stop")) {
@@ -130,13 +135,13 @@ public class ServerApp {
         return;
       }
 
-      RequestHandler requestHandler = handlerMapper.getHandler(requestUri);
+      RequestHandler requestHandler = handlerMapper.getHandler(servletPath);
 
       if (requestHandler != null) {
         try {
           requestHandler.getMethod().invoke( //
               requestHandler.getBean(), //
-              in, out);
+              params, out);
 
         } catch (Exception e) {
           out.println("요청 처리 중 오류 발생!");
@@ -152,8 +157,6 @@ public class ServerApp {
         notFound(out);
         logger.info("해당 명령을 지원하지 않습니다.");
       }
-
-      out.println("!end!");
       out.flush();
       logger.info("클라이언트에게 응답하였습니다.");
 
@@ -167,7 +170,17 @@ public class ServerApp {
 
 
   private void notFound(PrintStream out) throws IOException {
-    out.println("요청한 명령을 처리할 수 없습니다.");
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<title>실행 오류!</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>실행 오류!</h1>");
+    out.println("<p>요청한 명령을 처리할 수 없습니다.</p>");
+    out.println("</body>");
+    out.println("</html>");
   }
 
   private void quit(PrintStream out) throws IOException {
@@ -181,6 +194,32 @@ public class ServerApp {
     out.println("HTTP/1.1 200 OK");
     out.println("Server: moonsolidServer");
     out.println();
+  }
+
+  private String getServletPath(String requestUri) {
+    return requestUri.split("\\?")[0];
+  }
+
+  private Map<String, String> getParameters(String requestUri) throws Exception {
+    Map<String, String> params = new HashMap<>();
+    String[] items = requestUri.split("\\?");
+    if (items.length > 1) {
+      logger.debug(String.format("query string => %s", items[1]));
+      String[] entries = items[1].split("&");
+      for (String entry : entries) {
+        logger.debug(String.format("parameter => %s", entry));
+        String[] kv = entry.split("=");
+
+        if (kv.length > 1) {
+          String value = URLDecoder.decode(kv[1], "UTF-8");
+
+          params.put(kv[0], value);
+        } else {
+          params.put(kv[0], "");
+        }
+      }
+    }
+    return params;
   }
 
   public static void main(String[] args) {

@@ -1,10 +1,9 @@
 package com.moonsolid.sc.servlet;
 
 import java.io.PrintStream;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import com.moonsolid.sc.service.BoardService;
-import com.moonsolid.util.Prompt;
 import com.moonsolid.util.RequestMapping;
 
 @Component
@@ -18,16 +17,25 @@ public class BoardDeleteServlet {
 
 
   @RequestMapping("/board/delete")
-  public void service(Scanner in, PrintStream out) throws Exception {
-    int no = Prompt.getInt(in, out, "게시글 번호 : ");
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<meta http-equiv='refresh' content='2;url=/board/list'>");
+    out.println("<title>게시글 삭제</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>게시글 삭제 결과</h1>");
 
+    int no = Integer.parseInt(params.get("no"));
     if (boardService.delete(no) > 0) {
-      out.println("게시글을 삭제했습니다.");
-
+      out.println("<p>게시글을 삭제했습니다.</p>");
     } else {
-      out.println("해당 번호의 게시글이 없습니다.");
+      out.println("<p>해당 번호의 게시글이 없습니다.</p>");
     }
+
+    out.println("</body>");
+    out.println("</html>");
   }
-
-
 }
