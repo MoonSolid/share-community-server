@@ -1,15 +1,22 @@
 package com.moonsolid.sc.servlet;
 
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
-import org.springframework.stereotype.Component;
-import com.moonsolid.util.RequestMapping;
+import javax.servlet.GenericServlet;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebServlet;
 
-@Component
-public class BoardAddFormServlet {
+@WebServlet("/board/addForm")
+public class BoardAddFormServlet extends GenericServlet {
+  private static final long serialVersionUID = 1L;
 
-  @RequestMapping("/board/addForm")
-  public void service(Map<String, String> params, PrintWriter out) throws Exception {
+  @Override
+  public void service(ServletRequest req, ServletResponse res)
+      throws ServletException, IOException {
+    res.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = res.getWriter();
     out.println("<!DOCTYPE html>");
     out.println("<html>");
     out.println("<head>");
@@ -18,7 +25,7 @@ public class BoardAddFormServlet {
     out.println("</head>");
     out.println("<body>");
     out.println("<h1>게시물 입력</h1>");
-    out.println("<form action='/board/add'>");
+    out.println("<form action='add'>");
     out.println("내용:<br>");
     out.println("<textarea name='title' rows='5' cols='60'></textarea><br>");
     out.println("<button>제출</button>");
