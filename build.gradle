@@ -3,7 +3,7 @@
 plugins {
    
     id 'java'
-    id 'eclipse'
+    id 'eclipse-wtp'
     id 'war'   
 }
 
